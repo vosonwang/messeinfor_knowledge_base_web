@@ -1,11 +1,11 @@
 export default [
   {
-    path: '*',
+    path: '/admin',
     meta: {
-      title: 'Page Not Found'
+      title: 'admin'
     },
-    name: '404',
-    component: (resolve) => require(['../views/404.vue'], resolve)
+    name: 'admin',
+    component: (resolve) => require(['../views/admin.vue'], resolve)
 
   },
   {
@@ -15,6 +15,15 @@ export default [
     },
     name: 'home',
     component: (resolve) => require(['../views/home.vue'], resolve)
+
+  },
+  {
+    path: '*',
+    meta: {
+      title: 'Page Not Found'
+    },
+    name: '404',
+    component: (resolve) => require(['../views/404.vue'], resolve)
 
   }
 ]

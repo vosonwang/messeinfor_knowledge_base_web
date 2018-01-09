@@ -7,7 +7,7 @@
       <slot name="content"></slot>
     </Content>
     <Footer :style="{textAlign:'center'}">
-      2013-2030 &copy; voson.me
+      2013-2030 &copy; messeinfor.com
     </Footer>
   </Layout>
 </template>
