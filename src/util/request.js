@@ -1,5 +1,6 @@
 import ck from './cookie'
 import store from '../store'
+import iView from 'iview'
 
 let req = {}
 
@@ -43,7 +44,6 @@ req.fetchAsync = async (url, method, data, headerArg) => {
     /*字符串转为大写*/
     let capMethod = method.toUpperCase()
 
-
     if (capMethod !== "GET" && (data == null || data === undefined)) {
       /*请求中未包含数据，中断*/
       throw new Error("请求中未包含数据！")
@@ -55,10 +55,32 @@ req.fetchAsync = async (url, method, data, headerArg) => {
     return await fetch(url, {method: capMethod, body: proData, headers: header}).then(status).then(json)
 
   } catch (e) {
-    if (e.message === "Unauthorized") {
-      store.dispatch('switchLogin', true)
+    switch (e.message) {
+      case "Unauthorized":
+        iView.Message.error({
+          content: "系统超时！",
+          duration: 2,
+
+        });
+        store.dispatch('switchLogin', true)
+        break
+      case "用户未登录！":
+        store.dispatch('switchLogin', true)
+        break
+      case "请求中未包含数据！":
+        iView.Message.error({
+          content: "系统超时！",
+          duration: 2,
+
+        });
+        break
+      default:
+        iView.Message.error({
+          content: e.message,
+          duration: 2,
+
+        });
     }
-    console.log(e)
   }
 }
 

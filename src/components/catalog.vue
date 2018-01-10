@@ -1,6 +1,6 @@
 <style scoped>
   span.hide {
-    display: none;
+    display: none
   }
 </style>
 
@@ -12,12 +12,14 @@
 
 <script>
   import req from '../util/request'
+  import util from '../util'
 
   export default {
     name: "catalog",
     mounted: function () {
-      req.fetchAsync("/admin/docs", "get").then(data => {
-          console.log(data)
+      let _self = this
+      req.fetchAsync("/admin/docs/0", "get").then(data => {
+          _self.$set(_self.tree[0], 'children', util.combine(_self.addHack(data)))
         }
       )
     },
@@ -41,7 +43,7 @@
                 h('span', {
                   style: {
                     display: 'inline-block',
-                    width: '96%',
+                    width: '95%',
                   }
                 }, [
                   h('Icon', {
@@ -77,7 +79,7 @@
                     }
                   }),
                 ])
-              ]);
+              ])
             },
             children: []
 
@@ -98,11 +100,11 @@
           on: {
             /*鼠标经过显示按钮*/
             mouseover: () => {
-              data.active = true;
+              data.active = true
             },
             /*鼠标移走隐藏按钮*/
             mouseout: () => {
-              data.active = false;
+              data.active = false
             }
           },
         }, [
@@ -202,7 +204,7 @@
               }
             }),
           ])
-        ]);
+        ])
       },
       ok() {
 
@@ -211,14 +213,24 @@
 
       },
       append(node, data) {
-        const children = data.children || [];
-        children.push({
+        const children = data.children || []
+
+        let newNode = {
           title: "新文档",
           expand: true,
           active: false,
+          lang: 0,
           parent_id: node.node.id,
-        });
-        this.$set(data, 'children', children);
+        }, _self = this
+
+        req.fetchAsync("/admin/docs", "post", newNode).then(rs => {
+            if (!!rs) {
+              newNode.id = rs
+              children.push(newNode)
+              _self.$set(data, 'children', children)
+            }
+          }
+        )
       },
       remove(root, node, data) {
 
@@ -227,6 +239,13 @@
       upward(root, node, data) {
 
       },
+      addHack(data) {
+        data.forEach(function (v, k) {
+          v.active = false
+          v.expand = true
+        })
+        return data
+      }
     }
   }
 </script>
