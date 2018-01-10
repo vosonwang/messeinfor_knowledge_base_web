@@ -11,12 +11,21 @@
 </template>
 
 <script>
+  import req from '../util/request'
+
   export default {
     name: "catalog",
+    mounted: function () {
+      req.fetchAsync("/admin/docs", "get").then(data => {
+          console.log(data)
+        }
+      )
+    },
     data() {
       return {
         tree: [
           {
+            id: "00000000-0000-0000-0000-000000000000",
             title: "目录",
             expand: true,
             render: (h, {root, node, data}) => {
@@ -24,37 +33,43 @@
                 style: {
                   display: 'inline-block',
                   width: '100%',
-                  height: '20px',
-                  fontSize: '20px'
+                  height: '30px',
+                  lineHeight: '30px',
+                  textAlign: 'left'
                 }
               }, [
-                h('span', [
+                h('span', {
+                  style: {
+                    display: 'inline-block',
+                    width: '96%',
+                  }
+                }, [
                   h('Icon', {
                     props: {
                       type: 'ios-folder-outline'
                     },
                     style: {
-                      marginRight: '8px'
+                      marginRight: '8px',
+                      fontSize: '20px'
                     }
                   }),
-                  h('span', data.title)
+                  h('span', {
+                    style: {
+                      fontSize: '20px'
+                    }
+                  }, data.title)
                 ]),
                 h('span', {
                   style: {
                     display: 'inline-block',
-                    width: '93%',
-                    textAlign: 'right',
+                    verticalAlign: 'top'
                   }
                 }, [
                   h('Button', {
                     props: Object.assign({}, this.buttonProps, {
                       icon: 'plus',
-                      type: 'primary'
+                      type: 'ghost',
                     }),
-                    style: {
-                      width: '52px',
-                      marginRight: '8px'
-                    },
                     on: {
                       click: () => {
                         this.append(node, data)
@@ -76,7 +91,9 @@
           style: {
             display: 'inline-block',
             width: '100%',
-            height: '26px',
+            height: '30px',
+            lineHeight: '30px',
+            textAlign: 'left'
           },
           on: {
             /*鼠标经过显示按钮*/
@@ -95,42 +112,33 @@
                 type: 'ios-paper-outline'
               },
               style: {
-                marginRight: '8px'
+                marginRight: '8px',
+                fontSize: '20px'
               }
             }),
             h('span', {
               style: {
                 display: 'inline-block',
+                fontSize: '18px'
               }
             }, data.title)
           ]),
           h('span', {
             style: {
               marginLeft: '30px',
+              display: 'inline-block',
+              verticalAlign: 'top'
             },
             'class': {
               hide: !data.active
             }
           }, [
-            h('Button', {
-              /*将全局buttonProps和{icon:''}拼在一起给到props*/
-              props: Object.assign({}, this.buttonProps, {
-                icon: 'android-create',
-              }),
-              style: {
-                marginRight: '8px',
 
-              },
-
-              on: {
-                click: () => {
-                  this.editNode(data)
-                }
-              }
-            }),
             h('Button', {
               props: Object.assign({}, this.buttonProps, {
-                icon: 'ios-plus-empty'
+                icon: 'ios-plus-empty',
+                type: 'ghost',
+
               }),
               style: {
                 marginRight: '8px',
@@ -144,7 +152,9 @@
             }),
             h('Button', {
               props: Object.assign({}, this.buttonProps, {
-                icon: 'ios-minus-empty'
+                icon: 'ios-minus-empty',
+                type: 'ghost',
+
               }),
               style: {
                 marginRight: '8px',
@@ -159,7 +169,9 @@
             }),
             h('Button', {
               props: Object.assign({}, this.buttonProps, {
-                icon: 'ios-arrow-up'
+                icon: 'ios-arrow-up',
+                type: 'ghost',
+
               }),
               style: {
                 marginRight: '8px',
@@ -172,31 +184,41 @@
               }
             }),
             h('Button', {
+              /*将全局buttonProps和{icon:''}拼在一起给到props*/
               props: Object.assign({}, this.buttonProps, {
-                icon: 'ios-compose-outline',
+                icon: 'android-create',
+                type: 'ghost',
+
               }),
-              style: {},
+              style: {
+                marginRight: '8px',
+
+              },
+
               on: {
                 click: () => {
-                  this.editArticle(data)
+                  this.editDoc(data)
                 }
               }
-            })
+            }),
           ])
         ]);
-      },
-      editNode(data) {
-
       },
       ok() {
 
       },
-      editArticle(data) {
+      editDoc(data) {
 
       },
       append(node, data) {
-
-
+        const children = data.children || [];
+        children.push({
+          title: "新文档",
+          expand: true,
+          active: false,
+          parent_id: node.node.id,
+        });
+        this.$set(data, 'children', children);
       },
       remove(root, node, data) {
 

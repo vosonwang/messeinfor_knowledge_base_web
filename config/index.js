@@ -11,10 +11,14 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      'docs': {
+      '/admin/docs': {
         target: 'http://localhost:8300',
         changeOrigin: true
-      }
+      },
+      '/tokens': {
+        target: 'http://localhost:8300',
+        changeOrigin: true
+      },
     },
 
     // Various Dev Server settings

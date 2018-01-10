@@ -6,6 +6,11 @@
 这是一个vue webpack 的工程，使用了：
 iview （它自己也有一个工程项目，但是每次dev都很慢）
 
+## devDependencies
+/*less iview定制主题必选*/
+"less": "^2.7.1",
+"less-loader": "^2.2.3",
+
 ## Build Setup
 
 ``` bash
