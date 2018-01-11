@@ -281,11 +281,13 @@
           Request.fetchAsync('/admin/nodekey/' + data.id, 'patch',
             {"id": parent.children[index - 1].id}
           ).then(result => {
-            parent.children = parent.children.slice(0, index - 1).concat(
-              parent.children.slice(index, index + 1),
-              parent.children.slice(index - 1, index),
-              parent.children.slice(index + 1, length)
-            );
+            if (!!result) {
+              parent.children = parent.children.slice(0, index - 1).concat(
+                parent.children.slice(index, index + 1),
+                parent.children.slice(index - 1, index),
+                parent.children.slice(index + 1, length)
+              );
+            }
           });
 
 

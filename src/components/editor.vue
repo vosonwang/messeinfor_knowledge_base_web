@@ -33,7 +33,7 @@
   import 'mavon-editor/dist/css/index.css'
   import moment from 'moment'
   import Request from '../util/request'
-
+  import utf8 from 'utf8'
   export default {
     name: "editor",
     components: {
@@ -42,7 +42,6 @@
     data() {
       return {
         toolbars: {
-
           bold: true, // 粗体
           italic: true, // 斜体
           header: true, // 标题
@@ -140,7 +139,7 @@
         /*获取要上传文件*/
         let a = e.target.files[0];
 
-        Request.uploadFile('/admin/files', 'post', a, {"id": utf8.encode(a.name)}).then(data => {
+        Request.fetchAsync('/admin/files', 'post', a, {"id": utf8.encode(a.name)}).then(data => {
             /*清空上传文件，以便同一文件可以多次上传，否则同一个文件不会触发change事件*/
             e.target.value = null;
 

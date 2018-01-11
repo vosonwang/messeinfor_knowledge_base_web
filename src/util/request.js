@@ -19,16 +19,18 @@ const json = (response) => {
 }
 
 Request.fetchAsync = async (url, method, data, headerArg) => {
-  let header = new Headers()
-  let proData = data
+  let header = new Headers(),
+    capMethod = method.toUpperCase(), /*字符串转为大写*/
+    proData = data
 
-  if (headerArg !== undefined) {
-    if (headerArg.id !== undefined) {
-      header.append("id", headerArg.id)
-    }
-  } else {
+  if (!url.startsWith("/admin/images") && !url.startsWith("/admin/files")) {
     proData = JSON.stringify(data)
   }
+
+  if (headerArg !== undefined && headerArg.id !== undefined) {
+    header.append("id", headerArg.id)
+  }
+
 
   try {
 
@@ -42,11 +44,6 @@ Request.fetchAsync = async (url, method, data, headerArg) => {
       }
       header.append('Authorization', a)
     }
-
-    /*为发起请求做准备*/
-    /*字符串转为大写*/
-    let capMethod = method.toUpperCase()
-
 
     return await fetch(url, {method: capMethod, body: proData, headers: header}).then(status).then(json)
 
