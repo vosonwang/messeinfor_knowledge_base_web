@@ -11,7 +11,24 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
+      /*注意调整顺序，会对有请求影响*/
+      '/docs': {
+        target: 'http://localhost:8300',
+        changeOrigin: true
+      },
       '/admin/docs': {
+        target: 'http://localhost:8300',
+        changeOrigin: true
+      },
+      '/admin/nodekey': {
+        target: 'http://localhost:8300',
+        changeOrigin: true
+      },
+      '/admin/images': {
+        target: 'http://localhost:8300',
+        changeOrigin: true
+      },
+      '/admin/files': {
         target: 'http://localhost:8300',
         changeOrigin: true
       },

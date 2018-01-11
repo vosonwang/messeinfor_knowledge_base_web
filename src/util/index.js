@@ -4,11 +4,19 @@ util.title = function (title) {
   window.document.title = title
 }
 
+util.addAttr = (data) => {
+  data.forEach(function (v) {
+    v.active = false
+    v.expand = true
+  })
+  return data
+}
+
 /*
 * 组织目录树
 * * arrObj 必须是数组对象，且不能为空
 * 将一纬度数组对象转换为无限层级的Tree形数组对象* */
-util.combine = function (rows) {
+util.combine = (rows) => {
   function exists(rows, parentId) {
     for (let i = 0; i < rows.length; i++) {
       if (rows[i].id === parentId) return true

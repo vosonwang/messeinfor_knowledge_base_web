@@ -11,17 +11,26 @@
 </template>
 
 <script>
-  import req from '../util/request'
-  import util from '../util'
+  import Request from '../util/request'
+  import {mapActions, mapGetters} from 'vuex'
 
   export default {
-    name: "catalog",
+    name: "toc",
     mounted: function () {
-      let _self = this
-      req.fetchAsync("/admin/docs/0", "get").then(data => {
-          _self.$set(_self.tree[0], 'children', util.combine(_self.addHack(data)))
+      this.getTocs(0)
+    },
+    computed: {
+      ...mapGetters([
+        'proTocs'
+      ]),
+    },
+    watch: {
+      proTocs: {
+        handler: function (val, oldval) {
+          /*一旦全局tocs变化，则更新目录*/
+          this.tree[0].children = JSON.parse(JSON.stringify(val));
         }
-      )
+      }
     },
     data() {
       return {
@@ -162,7 +171,6 @@
                 marginRight: '8px',
 
               },
-
               on: {
                 click: () => {
                   this.remove(root, node, data)
@@ -196,7 +204,6 @@
                 marginRight: '8px',
 
               },
-
               on: {
                 click: () => {
                   this.editDoc(data)
@@ -206,11 +213,20 @@
           ])
         ])
       },
-      ok() {
-
-      },
       editDoc(data) {
+        let _self = this;
+        Request.fetchAsync('/docs/' + data.id, 'get').then(rs => {
+          if (rs.text === undefined || rs.text === null) {
+            _self.$Message.error({
+              content: "获取文档失败！",
+              duration: 2
+            })
+          } else {
+            _self.getDoc(rs)
+            this.switchEditor(true)
+          }
 
+        })
       },
       append(node, data) {
         const children = data.children || []
@@ -223,7 +239,7 @@
           parent_id: node.node.id,
         }, _self = this
 
-        req.fetchAsync("/admin/docs", "post", newNode).then(rs => {
+        Request.fetchAsync("/admin/docs", "post", newNode).then(rs => {
             if (!!rs) {
               newNode.id = rs
               children.push(newNode)
@@ -234,18 +250,48 @@
       },
       remove(root, node, data) {
 
+        if (!node.children || node.children.length === 0) {
+          const parentKey = root.find(el => el === node).parent;
+          const parent = root.find(el => el.nodeKey === parentKey).node;
+          const index = parent.children.indexOf(data);
+          Request.fetchAsync('/admin/docs/' + data.id, 'delete').then(rs => {
+            if (rs) {
+              parent.children.splice(index, 1);
+            }
+          });
+
+        } else {
+          this.$Message.warning({
+            content: "如需删除，请先删除子节点！",
+            duration: 2
+          })
+        }
       },
       /*向上移动一位*/
       upward(root, node, data) {
+        /*移除选中状态*/
+        data.active = false;
 
+        const parentKey = root.find(el => el === node).parent;
+        const parent = root.find(el => el.nodeKey === parentKey).node;
+        const index = parent.children.indexOf(data);
+        const length = parent.children.length;
+        if (index !== 0) {
+
+          Request.fetchAsync('/admin/nodekey/' + data.id, 'patch',
+            {"id": parent.children[index - 1].id}
+          ).then(result => {
+            parent.children = parent.children.slice(0, index - 1).concat(
+              parent.children.slice(index, index + 1),
+              parent.children.slice(index - 1, index),
+              parent.children.slice(index + 1, length)
+            );
+          });
+
+
+        }
       },
-      addHack(data) {
-        data.forEach(function (v, k) {
-          v.active = false
-          v.expand = true
-        })
-        return data
-      }
+      ...mapActions(['getTocs', 'switchEditor', 'getDoc'])
     }
   }
 </script>

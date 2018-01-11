@@ -25,8 +25,8 @@
 
 <script>
   import {mapActions, mapState} from 'vuex'
-  import req from '../util/request'
-  import ck from '../util/cookie'
+  import Request from '../util/request'
+  import cookie from '../util/cookie'
 
   export default {
     name: "login",
@@ -66,20 +66,30 @@
           if (valid) {
             this.loading = true;
             let _self = this;
-            req.fetchAsync('/tokens', 'post', _self.loginForm).then(data => {
+            Request.fetchAsync('/tokens', 'post', _self.loginForm).then(data => {
               _self.loading = false;
               if (!data) {
+                /*TODO */
                 console.log(_self.$refs[name])
               } else {
-                _self.switchLogin(false);
-                ck.setCookie("Authorization", data.token, 1);
+                if (data === "用户名密码错误！") {
+                  _self.$Message.error({
+                    content: "用户名或密码错误！",
+                    duration: 2,
+                  })
+                } else {
+                  /*登录成功后，先设定cookie，因为之后马上要请求数据，必须要有token*/
+                  cookie.setCookie("Authorization", data.token, 1);
+                  _self.switchLogin(false);
+                }
+
               }
             })
 
           }
         })
       },
-      ...mapActions(['switchLogin'])
+      ...mapActions(['switchLogin', 'getTocs'])
 
     }
   }
