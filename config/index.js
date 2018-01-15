@@ -20,7 +20,7 @@ module.exports = {
         target: 'http://localhost:8300',
         changeOrigin: true
       },
-      '/admin/nodekey': {
+      '/admin/alias': {
         target: 'http://localhost:8300',
         changeOrigin: true
       },

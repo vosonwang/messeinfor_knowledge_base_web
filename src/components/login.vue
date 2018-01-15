@@ -7,11 +7,11 @@
     <Form ref="loginForm" :model="loginForm" :rules="ruleInline">
       <FormItem prop="user">
         <Input type="text" v-model="loginForm.username" placeholder="用户名"
-               icon="ios-person-outline"></Input>
+               icon="person"></Input>
       </FormItem>
       <FormItem prop="password">
         <Input type="password" v-model="loginForm.password" placeholder="密码"
-               icon="ios-locked-outline" @on-enter="signIn('loginForm')"></Input>
+               icon="ios-locked" @on-enter="signIn('loginForm')"></Input>
       </FormItem>
       <FormItem>
         <Button type="error" size="large" long :loading="loading" @click="signIn('loginForm')">

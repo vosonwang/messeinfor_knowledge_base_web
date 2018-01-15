@@ -241,7 +241,8 @@
 
         Request.fetchAsync("/admin/docs", "post", newNode).then(rs => {
             if (!!rs) {
-              newNode.id = rs
+              newNode.id = rs.id
+              newNode.alias_id=rs.alias_id
               children.push(newNode)
               _self.$set(data, 'children', children)
             }
@@ -278,8 +279,8 @@
         const length = parent.children.length;
         if (index !== 0) {
 
-          Request.fetchAsync('/admin/nodekey/' + data.id, 'patch',
-            {"id": parent.children[index - 1].id}
+          Request.fetchAsync('/admin/alias/' + data.alias_id, 'patch',
+            {"id": parent.children[index - 1].alias_id}
           ).then(result => {
             if (!!result) {
               parent.children = parent.children.slice(0, index - 1).concat(

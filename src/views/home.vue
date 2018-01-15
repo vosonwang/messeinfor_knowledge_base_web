@@ -1,7 +1,7 @@
 <template>
   <v-base>
     <search slot="header"></search>
-    <Card slot="content" dis-hover :style="{margin:'20px auto',width:'80%',textAlign:'center'}">
+    <Card slot="content" dis-hover :style="{margin:'20px auto',width:'80%'}">
       <p :style="{fontSize:'100px'}">{{$t('home.success')}}</p>
       <i-switch v-model="switch1" @on-change="change"></i-switch>
     </Card>

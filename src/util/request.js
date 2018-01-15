@@ -20,7 +20,8 @@ const json = (response) => {
 
 Request.fetchAsync = async (url, method, data, headerArg) => {
   let header = new Headers(),
-    capMethod = method.toUpperCase(), /*字符串转为大写*/
+    //method字符串转为大写
+    capMethod = method.toUpperCase(),
     proData = data
 
   if (!url.startsWith("/admin/images") && !url.startsWith("/admin/files")) {
@@ -39,7 +40,6 @@ Request.fetchAsync = async (url, method, data, headerArg) => {
     if (url.startsWith("/admin")) {
       let a = cookie.getCookie("Authorization")
       if (!a) {
-        store.dispatch('switchLogin', true)
         throw new Error("用户未登录！")
       }
       header.append('Authorization', a)
@@ -57,12 +57,12 @@ Request.fetchAsync = async (url, method, data, headerArg) => {
         store.dispatch('switchLogin', true)
         break
       case "用户未登录！":
-        console.log("用户未登录")
+        store.dispatch('switchLogin', true)
         break
       default:
         iView.Message.error({
           content: "出错了！请联系管理员，错误信息：" + e.message,
-          duration: 2,
+          duration: 5,
         });
     }
   }

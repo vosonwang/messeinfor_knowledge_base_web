@@ -1,27 +1,30 @@
 <style>
   .v-note-wrapper div.v-note-panel {
-    box-shadow: none;
+    box-shadow: none
   }
 
   .v-note-wrapper div.v-note-op {
-    box-shadow: none;
+    box-shadow: none
   }
 </style>
 
 <template>
-  <Modal v-model="modal" width="1200" :title="this.doc.title" id="editor">
-    <mavon-editor default_open="edit" @subfieldtoggle="subfieldCallback" :value=this.doc.text
+  <Modal v-model="modal" width="1200" id="editor">
+    <div slot="header">
+      <Input v-model="title"></Input>
+    </div>
+    <mavon-editor default_open="edit" @subfieldtoggle="subfieldCallback" v-model="text"
                   :toolbars=this.toolbars :ishljs="false" @save="saveArticle" @imgAdd="uploadImg"
                   placeholder="写点什么..." ref=md></mavon-editor>
     <div class="ivu-upload ivu-upload-select" ref="diy">
       <input type="file" class="ivu-upload-input" ref="input" @change="uploadFile">
-      <button type="button" class="op-icon fa " aria-hidden="true" title="上传附件" style="margin-left: 3px;"
+      <button type="button" class="op-icon fa " aria-hidden="true" title="上传附件" style="margin-left: 3px"
               @click="upload">
         <Icon type="arrow-up-a"></Icon>
       </button>
     </div>
     <div slot="footer">
-      创建时间：{{createTime}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      创建时间：{{createTime}} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
       更新时间：{{modifyTime}}
     </div>
   </Modal>
@@ -34,6 +37,7 @@
   import moment from 'moment'
   import Request from '../util/request'
   import utf8 from 'utf8'
+
   export default {
     name: "editor",
     components: {
@@ -81,11 +85,11 @@
     },
     mounted() {
       /*默认显示的是全屏编辑，所以双栏模式设置需手动设置为false*/
-      this.$children[0].s_subfield = false;
-      let md = this.$refs.md;
-      let toolbar_left = md.$refs.toolbar_left;
-      let diy = this.$refs.diy;
-      toolbar_left.$el.append(diy);
+      this.$children[0].s_subfield = false
+      let md = this.$refs.md
+      let toolbar_left = md.$refs.toolbar_left
+      let diy = this.$refs.diy
+      toolbar_left.$el.append(diy)
     },
     computed: {
       modal: {
@@ -94,6 +98,26 @@
         },
         set: function (v) {
           this.switchEditor(v)
+        }
+      },
+      title: {
+        get: function () {
+          return this.doc.title
+        },
+        set: function (v) {
+          let _self=this,n = JSON.parse(JSON.stringify(_self.doc))
+          n.title = v
+          this.getDoc(n)
+        }
+      },
+      text: {
+        get: function () {
+          return this.doc.text
+        },
+        set: function (v) {
+          let _self=this,n = JSON.parse(JSON.stringify(_self.doc))
+          n.text = v
+          this.getDoc(n)
         }
       },
       ...mapState({
@@ -115,19 +139,16 @@
         this.$children[0].s_preview_switch = this.$children[0].s_subfield
       },
       saveArticle: function (value, render) {
-        let _self = this;
-        let n = JSON.parse(JSON.stringify(this.doc));
-        Request.fetchAsync('/admin/docs/' + _self.doc.id, 'patch', {
-          "text": value,
-        }).then(data => {
-          n.updated = data;
-          n.text = value;
-          _self.getDoc(n)
-        });
+        let _self = this
+        Request.fetchAsync('/admin/docs/' + _self.doc.id, 'put', _self.doc).then(data => {
+          if (!!data) {
+            _self.getDoc(data)
+          }
+        })
       },
       upload() {
         /*打开隐藏的上传文件按钮*/
-        this.$refs.input.click();
+        this.$refs.input.click()
       },
       uploadImg: function (filename, imgFile) {
         Request.fetchAsync('/admin/images', 'post', imgFile, {}).then(data =>
@@ -137,11 +158,11 @@
       uploadFile: function (e) {
 
         /*获取要上传文件*/
-        let a = e.target.files[0];
+        let a = e.target.files[0]
 
         Request.fetchAsync('/admin/files', 'post', a, {"id": utf8.encode(a.name)}).then(data => {
             /*清空上传文件，以便同一文件可以多次上传，否则同一个文件不会触发change事件*/
-            e.target.value = null;
+            e.target.value = null
 
             /*在光标处插入上传的文件链接*/
             this.$refs.md.insertText(this.$refs.md.getTextareaDom(),
@@ -152,7 +173,7 @@
               })
 
           }
-        );
+        )
       },
       ...mapActions(['getArticle', 'switchEditor', 'getDoc'])
     }
