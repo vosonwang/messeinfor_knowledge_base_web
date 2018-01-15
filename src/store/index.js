@@ -13,14 +13,14 @@ const debug = process.env.NODE_ENV !== 'production';
 // initial state
 const state = {
   login: false,
-  tocs: [],
+  TOC: [],
   editor: false,
   doc: {}
 };
 
 const SWITCH_LOGIN = 'SWITCH_LOGIN';
 const SWITCH_EDITOR = 'SWITCH_EDITOR';
-const GET_TOCS = 'GET_TOCS';
+const GET_TOC = 'GET_TOC';
 const GET_DOC = 'GET_DOC';
 
 const mutations = {
@@ -30,8 +30,8 @@ const mutations = {
   [SWITCH_EDITOR](state, bool) {
     state.editor = bool
   },
-  [GET_TOCS](state, tocs) {
-    state.tocs = tocs;
+  [GET_TOC](state, TOC) {
+    state.TOC = TOC;
   },
   [GET_DOC](state, doc) {
     state.doc = doc;
@@ -51,7 +51,7 @@ const actions = {
       /*不管是首次登录还是超时后登录，登录即请求最新的目录数据*/
       Request.fetchAsync('/admin/docs/' + 0, 'get').then(rs => {
         if (rs) {
-          commit(GET_TOCS, rs);
+          commit(GET_TOC, rs);
         } else {
           console.log(rs)
         }
@@ -59,10 +59,10 @@ const actions = {
     }
     commit(SWITCH_LOGIN, bool)
   },
-  getTocs({commit}, lang) {
+  getTOC({commit}, lang) {
     Request.fetchAsync('/admin/docs/' + lang, 'get').then(rs => {
       if (rs) {
-        commit(GET_TOCS, rs);
+        commit(GET_TOC, rs);
       } else {
         console.log("获取目录失败")
       }
@@ -71,11 +71,11 @@ const actions = {
 };
 
 const getters = {
-  proTocs: state => {
-    if (state.tocs === []) {
+  comTOC: state => {
+    if (state.TOC === []) {
       return []
     }
-    return util.combine(util.addAttr(state.tocs))
+    return util.combine(util.addAttr(state.TOC))
   }
 }
 

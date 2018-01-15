@@ -89,7 +89,7 @@
           }
         })
       },
-      ...mapActions(['switchLogin', 'getTocs'])
+      ...mapActions(['switchLogin', 'getTOC'])
 
     }
   }

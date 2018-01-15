@@ -11,11 +11,9 @@
 <template>
   <Modal v-model="modal" width="1200" id="editor">
     <div slot="header">
-      <Input v-model="title"></Input>
+      <Input v-model="title" ></Input>
     </div>
-    <mavon-editor default_open="edit" @subfieldtoggle="subfieldCallback" v-model="text"
-                  :toolbars=this.toolbars :ishljs="false" @save="saveArticle" @imgAdd="uploadImg"
-                  placeholder="写点什么..." ref=md></mavon-editor>
+    <mavon-editor  ref=md default_open="edit" @subfieldtoggle="subfieldCallback" v-model="text" :toolbars=this.toolbars :ishljs="false" @save="saveArticle" @imgAdd="uploadImg" placeholder="写点什么..."></mavon-editor>
     <div class="ivu-upload ivu-upload-select" ref="diy">
       <input type="file" class="ivu-upload-input" ref="input" @change="uploadFile">
       <button type="button" class="op-icon fa " aria-hidden="true" title="上传附件" style="margin-left: 3px"
