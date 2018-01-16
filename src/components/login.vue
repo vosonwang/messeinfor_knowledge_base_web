@@ -78,8 +78,10 @@
                     duration: 2,
                   })
                 } else {
-                  /*登录成功后，先设定cookie，因为之后马上要请求数据，必须要有token*/
-                  cookie.setCookie("Authorization", data.token, 1);
+                  /*登录成功后，先设定cookie，因为之后马上要请求数据，必须要有token
+                  * 设定token有效期为1小时
+                  * */
+                  cookie.setCookie("Authorization", data.token, 1 / 24);
                   _self.switchLogin(false);
                 }
 
