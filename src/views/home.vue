@@ -1,9 +1,44 @@
+<style>
+
+</style>
 <template>
   <v-base>
-    <search slot="header"></search>
+    <div style="text-align: center" slot="header">
+      <search></search>
+      <div class="badge">
+        <ButtonGroup size="small">
+          <template v-if="true">
+            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'home'}">
+              <Icon type="home"></Icon>
+            </router-link>
+          </template>
+          <template v-else>
+            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'home'}">
+              <Icon type="home"></Icon>
+            </router-link>
+          </template>
+          <template>
+            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'admin', params: { lang: 'zh-CN' }}">
+              <Icon type="person"></Icon>
+            </router-link>
+          </template>
+          <template v-if="true">
+            <router-link class="ivu-btn ivu-btn-ghost "
+                         :to="{ name: 'admin', params: { lang: 'zh-CN' }}">中文
+            </router-link>
+          </template>
+          <template v-else>
+            <router-link class="ivu-btn ivu-btn-ghost "
+                         :to="{ name: 'admin', params: { lang: 'zh-CN' }}">EN
+            </router-link>
+          </template>
+        </ButtonGroup>
+      </div>
+      <!--<router-link class="ivu-btn ivu-btn-primary ivu-btn-circle ivu-btn-icon-only badge" :to="{name:'admin',params: { lang: 'zh-CN' } }" tag="button">-->
+        <!--<Icon type="person"/>-->
+      <!--</router-link>-->
+    </div>
     <Card slot="content" dis-hover :style="{margin:'20px auto',width:'80%'}">
-      <p :style="{fontSize:'100px'}">{{$t('home.success')}}</p>
-      <i-switch v-model="switch1" @on-change="change"></i-switch>
     </Card>
   </v-base>
 </template>
@@ -21,18 +56,10 @@
       search
     },
     data() {
-      return {
-        switch1: false
-      }
+      return {}
     },
-    methods: {
-      change(status) {
-        this.$Message.info('开关状态：' + status);
-      }
-    }
+    methods: {}
   }
 </script>
 
-<style scoped>
 
-</style>

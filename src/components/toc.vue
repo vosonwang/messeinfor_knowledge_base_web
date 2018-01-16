@@ -16,17 +16,20 @@
 
 <script>
   import Request from '../util/request'
-  import {mapActions, mapGetters} from 'vuex'
+  import {mapActions, mapGetters, mapState} from 'vuex'
 
   export default {
     name: "TOC",
-    mounted: function () {
-      this.getTOC(0)
-    },
     computed: {
+      ...mapState({
+        'lang': state => state.lang,
+      }),
       ...mapGetters([
         'comTOC'
       ]),
+    },
+    mounted(){
+      this.getTOC(0)
     },
     watch: {
       comTOC: {
@@ -34,7 +37,7 @@
           /*一旦全局tocs变化，则更新目录*/
           this.tree[0].children = JSON.parse(JSON.stringify(val))
         }
-      }
+      },
     },
     data() {
       return {

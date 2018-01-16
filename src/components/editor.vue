@@ -11,9 +11,11 @@
 <template>
   <Modal v-model="modal" width="1200" id="editor">
     <div slot="header">
-      <Input v-model="title" ></Input>
+      <Input v-model="title" style="width: 50%" placeholder="标题"></Input>
+      <Input v-model="alias" style="width: 30%" placeholder="别名"></Input>
     </div>
-    <mavon-editor  ref=md default_open="edit" @subfieldtoggle="subfieldCallback" v-model="text" :toolbars=this.toolbars :ishljs="false" @save="saveArticle" @imgAdd="uploadImg" placeholder="写点什么..."></mavon-editor>
+    <mavon-editor ref=md default_open="edit" @subfieldtoggle="subfieldCallback" v-model="text" :toolbars=this.toolbars
+                  :ishljs="false" @save="saveArticle" @imgAdd="uploadImg" placeholder="写点什么..."></mavon-editor>
     <div class="ivu-upload ivu-upload-select" ref="diy">
       <input type="file" class="ivu-upload-input" ref="input" @change="uploadFile">
       <button type="button" class="op-icon fa " aria-hidden="true" title="上传附件" style="margin-left: 3px"
@@ -22,8 +24,18 @@
       </button>
     </div>
     <div slot="footer">
-      创建时间：{{createTime}} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-      更新时间：{{modifyTime}}
+      <Row>
+        <Col span="1">
+        <i-switch @on-change="changeLang">
+          <span slot="open">EN</span>
+          <span slot="close">CN</span>
+        </i-switch>
+        </Col>
+        <Col span="18">
+        创建时间：{{createTime}}</Col>
+        <Col span="5">
+        更新时间：{{modifyTime}}</Col>
+      </Row>
     </div>
   </Modal>
 </template>
@@ -35,14 +47,17 @@
   import moment from 'moment'
   import Request from '../util/request'
   import utf8 from 'utf8'
+  import ISwitch from "iview/src/components/switch/switch";
 
   export default {
     name: "editor",
     components: {
+      ISwitch,
       mavonEditor
     },
     data() {
       return {
+        lang: 0,
         toolbars: {
           bold: true, // 粗体
           italic: true, // 斜体
@@ -103,8 +118,18 @@
           return this.doc.title
         },
         set: function (v) {
-          let _self=this,n = JSON.parse(JSON.stringify(_self.doc))
+          let _self = this, n = JSON.parse(JSON.stringify(_self.doc))
           n.title = v
+          this.getDoc(n)
+        }
+      },
+      alias: {
+        get: function () {
+          return this.doc.name
+        },
+        set: function (v) {
+          let _self = this, n = JSON.parse(JSON.stringify(_self.doc))
+          n.name = v
           this.getDoc(n)
         }
       },
@@ -113,7 +138,7 @@
           return this.doc.text
         },
         set: function (v) {
-          let _self=this,n = JSON.parse(JSON.stringify(_self.doc))
+          let _self = this, n = JSON.parse(JSON.stringify(_self.doc))
           n.text = v
           this.getDoc(n)
         }
@@ -141,6 +166,7 @@
         Request.fetchAsync('/admin/docs/' + _self.doc.id, 'put', _self.doc).then(data => {
           if (!!data) {
             _self.getDoc(data)
+            _self.getTOC(0)
           }
         })
       },
@@ -173,7 +199,10 @@
           }
         )
       },
-      ...mapActions(['getArticle', 'switchEditor', 'getDoc'])
+      changeLang(status) {
+
+      },
+      ...mapActions(['getArticle', 'switchEditor', 'getDoc', 'getTOC'])
     }
 
   }

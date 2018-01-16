@@ -1,6 +1,6 @@
 export default [
   {
-    path: '/admin',
+    path: '/admin/:lang',
     meta: {
       title: 'admin'
     },
