@@ -50,12 +50,6 @@ Request.fetchAsync = async (url, method, data, headerArg) => {
   } catch (e) {
     switch (e.message) {
       case "Unauthorized":
-        iView.Message.error({
-          content: "系统超时！",
-          duration: 2,
-        });
-        store.dispatch('switchLogin', true)
-        break
       case "用户未登录！":
         store.dispatch('switchLogin', true)
         break

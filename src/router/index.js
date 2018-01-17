@@ -18,9 +18,15 @@ export default [
 
   },
   {
+    path: '/doc/:lang/:id',
+    name: 'doc',
+    component: (resolve) => require(['../views/doc.vue'], resolve)
+
+  },
+  {
     path: '*',
     meta: {
-      title: 'Page Not Found'
+      title: '404'
     },
     name: '404',
     component: (resolve) => require(['../views/404.vue'], resolve)

@@ -52,30 +52,11 @@
       Editor
     },
     beforeRouteUpdate(to, from, next) {
-      const path = to.path;
-      if (path === '/admin/zh-CN') {
-        this.switchLang('zh-CN');
-        this.getTOC(0)
-      } else if (path === '/admin/en-US') {
-        this.switchLang('en-US');
-        this.getTOC(1)
-      } else {
-        this.$route.push({name: '404'})
-      }
+      this.getPath(to.path);
       next()
     },
     mounted() {
-      const path = this.$route.path;
-      if (path.includes('zh-CN')) {
-        this.switchLang('zh-CN');
-        this.getTOC(0)
-      } else if (path.includes('en-US')) {
-        this.switchLang('en-US');
-        this.getTOC(1)
-      } else {
-        this.$route.push({name: '404'})
-      }
-
+      this.getPath(this.$route.path)
     },
     computed: {
       ...mapState({
@@ -83,6 +64,17 @@
       }),
     },
     methods: {
+      getPath(path) {
+        if (path === '/admin/zh-CN') {
+          this.switchLang('zh-CN');
+          this.getTOC(1)
+        } else if (path === '/admin/en-US') {
+          this.switchLang('en-US');
+          this.getTOC(0)
+        } else {
+          this.$router.push({name: '404'})
+        }
+      },
       ...mapActions(['switchLang', 'getTOC'])
     }
   }

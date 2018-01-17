@@ -1,30 +1,21 @@
-<style>
+<style scoped>
 
 </style>
+
 <template>
   <v-base>
     <div style="text-align: center" slot="header">
       <search></search>
       <div class="badge">
         <ButtonGroup size="small">
-          <template v-if="!lang">
-            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'admin', params: { lang: 'zh-CN' }}">
-              <Icon type="person"></Icon>
-            </router-link>
-          </template>
-          <template v-else>
-            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'admin', params: { lang: 'en-US' }}">
-              <Icon type="person"></Icon>
-            </router-link>
-          </template>
           <template v-if="lang">
             <router-link class="ivu-btn ivu-btn-ghost "
-                         :to="{ name: 'home', params: { lang: 'zh-CN' }}">中文
+                         :to="{ name: 'doc', params: { lang: 'zh-CN' }}">中文
             </router-link>
           </template>
           <template v-else>
             <router-link class="ivu-btn ivu-btn-ghost "
-                         :to="{ name: 'home', params: { lang: 'en-US' }}">EN
+                         :to="{ name: 'doc', params: { lang: 'en-US' }}">EN
             </router-link>
           </template>
         </ButtonGroup>
@@ -41,7 +32,7 @@
   import {mapActions, mapState} from 'vuex'
 
   export default {
-    name: 'home',
+    name: "doc",
     components: {
       vBase,
       search
@@ -60,17 +51,15 @@
     },
     methods: {
       getPath(path) {
-        if (path === '/kb/zh-CN') {
+        if (path.startsWith('/doc/zh-CN')) {
           this.switchLang('zh-CN');
-          this.getTOC(1)
-        } else if (path === '/kb/en-US') {
+        } else if (path.startsWith('/doc/en-US')) {
           this.switchLang('en-US');
-          this.getTOC(0)
         } else {
           this.$router.push({name: '404'})
         }
       },
-      ...mapActions(['switchLang', 'getTOC'])
+      ...mapActions(['switchLang'])
     }
   }
 </script>
