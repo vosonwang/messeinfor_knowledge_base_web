@@ -25,13 +25,7 @@
     </div>
     <div slot="footer">
       <Row>
-        <Col span="1">
-        <i-switch @on-change="changeLang">
-          <span slot="open">EN</span>
-          <span slot="close">CN</span>
-        </i-switch>
-        </Col>
-        <Col span="18">
+        <Col span="19">
         创建时间：{{createTime}}</Col>
         <Col span="5">
         更新时间：{{modifyTime}}</Col>
@@ -57,7 +51,6 @@
     },
     data() {
       return {
-        lang: 0,
         toolbars: {
           bold: true, // 粗体
           italic: true, // 斜体
@@ -98,10 +91,10 @@
     },
     mounted() {
       /*默认显示的是全屏编辑，所以双栏模式设置需手动设置为false*/
-      this.$children[0].s_subfield = false
-      let md = this.$refs.md
-      let toolbar_left = md.$refs.toolbar_left
-      let diy = this.$refs.diy
+      this.$children[0].s_subfield = false;
+      let md = this.$refs.md,
+        toolbar_left = md.$refs.toolbar_left,
+        diy = this.$refs.diy;
       toolbar_left.$el.append(diy)
     },
     computed: {
@@ -118,8 +111,8 @@
           return this.doc.title
         },
         set: function (v) {
-          let _self = this, n = JSON.parse(JSON.stringify(_self.doc))
-          n.title = v
+          let _self = this, n = JSON.parse(JSON.stringify(_self.doc));
+          n.title = v;
           this.getDoc(n)
         }
       },
@@ -128,8 +121,8 @@
           return this.doc.name
         },
         set: function (v) {
-          let _self = this, n = JSON.parse(JSON.stringify(_self.doc))
-          n.name = v
+          let _self = this, n = JSON.parse(JSON.stringify(_self.doc));
+          n.name = v;
           this.getDoc(n)
         }
       },
@@ -138,14 +131,15 @@
           return this.doc.text
         },
         set: function (v) {
-          let _self = this, n = JSON.parse(JSON.stringify(_self.doc))
-          n.text = v
+          let _self = this, n = JSON.parse(JSON.stringify(_self.doc));
+          n.text = v;
           this.getDoc(n)
         }
       },
       ...mapState({
           'editor': state => state.editor,
           'doc': state => state.doc,
+          'lang': state => state.lang,
         }
       ),
       createTime: function () {
@@ -161,12 +155,12 @@
         /*在点击双栏模式后，迫使预览模式的值和双栏模式保持一致*/
         this.$children[0].s_preview_switch = this.$children[0].s_subfield
       },
-      saveArticle: function (value, render) {
-        let _self = this
+      saveArticle: function () {
+        let _self = this;
         Request.fetchAsync('/admin/docs/' + _self.doc.id, 'put', _self.doc).then(data => {
           if (!!data) {
-            _self.getDoc(data)
-            _self.getTOC(0)
+            _self.getDoc(data);
+            _self.getTOC(_self.lang)
           }
         })
       },
@@ -182,11 +176,11 @@
       uploadFile: function (e) {
 
         /*获取要上传文件*/
-        let a = e.target.files[0]
+        let a = e.target.files[0];
 
         Request.fetchAsync('/admin/files', 'post', a, {"id": utf8.encode(a.name)}).then(data => {
             /*清空上传文件，以便同一文件可以多次上传，否则同一个文件不会触发change事件*/
-            e.target.value = null
+            e.target.value = null;
 
             /*在光标处插入上传的文件链接*/
             this.$refs.md.insertText(this.$refs.md.getTextareaDom(),
@@ -199,10 +193,7 @@
           }
         )
       },
-      changeLang(status) {
-
-      },
-      ...mapActions(['getArticle', 'switchEditor', 'getDoc', 'getTOC'])
+      ...mapActions(['getArticle', 'switchEditor', 'getDoc', 'getDoCEn', 'getTOC'])
     }
 
   }

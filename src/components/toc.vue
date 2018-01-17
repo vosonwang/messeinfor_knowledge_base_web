@@ -28,9 +28,6 @@
         'comTOC'
       ]),
     },
-    mounted(){
-      this.getTOC(0)
-    },
     watch: {
       comTOC: {
         handler: function (val, oldval) {
@@ -244,7 +241,7 @@
           title: "新文档",
           expand: true,
           active: false,
-          lang: 0,
+          lang: this.lang,
           parent_id: node.node.id,
         }, _self = this
 
@@ -259,7 +256,6 @@
         )
       },
       remove(root, node, data) {
-
         if (!node.children || node.children.length === 0) {
           const parentKey = root.find(el => el === node).parent
           const parent = root.find(el => el.nodeKey === parentKey).node
@@ -303,7 +299,7 @@
 
         }
       },
-      ...mapActions(['getTOC', 'switchEditor', 'getDoc'])
+      ...mapActions(['getTOC', 'switchEditor', 'getDoc',])
     }
   }
 </script>

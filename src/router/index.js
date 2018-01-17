@@ -9,7 +9,7 @@ export default [
 
   },
   {
-    path: '/',
+    path: '/kb/:lang',
     meta: {
       title: 'Home'
     },

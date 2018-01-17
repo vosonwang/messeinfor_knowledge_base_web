@@ -7,36 +7,28 @@
       <search></search>
       <div class="badge">
         <ButtonGroup size="small">
-          <template v-if="true">
-            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'home'}">
-              <Icon type="home"></Icon>
-            </router-link>
-          </template>
-          <template v-else>
-            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'home'}">
-              <Icon type="home"></Icon>
-            </router-link>
-          </template>
-          <template>
+          <template v-if="!lang">
             <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'admin', params: { lang: 'zh-CN' }}">
               <Icon type="person"></Icon>
             </router-link>
           </template>
-          <template v-if="true">
+          <template v-else>
+            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'admin', params: { lang: 'en-US' }}">
+              <Icon type="person"></Icon>
+            </router-link>
+          </template>
+          <template v-if="lang">
             <router-link class="ivu-btn ivu-btn-ghost "
-                         :to="{ name: 'admin', params: { lang: 'zh-CN' }}">中文
+                         :to="{ name: 'home', params: { lang: 'zh-CN' }}">中文
             </router-link>
           </template>
           <template v-else>
             <router-link class="ivu-btn ivu-btn-ghost "
-                         :to="{ name: 'admin', params: { lang: 'zh-CN' }}">EN
+                         :to="{ name: 'home', params: { lang: 'en-US' }}">EN
             </router-link>
           </template>
         </ButtonGroup>
       </div>
-      <!--<router-link class="ivu-btn ivu-btn-primary ivu-btn-circle ivu-btn-icon-only badge" :to="{name:'admin',params: { lang: 'zh-CN' } }" tag="button">-->
-        <!--<Icon type="person"/>-->
-      <!--</router-link>-->
     </div>
     <Card slot="content" dis-hover :style="{margin:'20px auto',width:'80%'}">
     </Card>
@@ -46,7 +38,8 @@
 <script>
   import vBase from '../components/base'
   import search from '../components/search'
-  import ISwitch from "iview/src/components/switch/switch";
+  import ISwitch from "iview/src/components/switch/switch"
+  import {mapActions, mapState} from 'vuex'
 
   export default {
     name: 'home',
@@ -55,10 +48,33 @@
       vBase,
       search
     },
-    data() {
-      return {}
+    beforeRouteUpdate(to, from, next) {
+      if (to.path.includes('zh-CN')) {
+        this.switchLang('zh-CN');
+        this.getTOC(0)
+      } else {
+        this.switchLang('en-US');
+        this.getTOC(1)
+      }
+      next()
     },
-    methods: {}
+    mounted() {
+      if (this.$route.path.includes('zh-CN')) {
+        this.switchLang('zh-CN');
+        this.getTOC(0)
+      } else {
+        this.switchLang('en-US');
+        this.getTOC(1)
+      }
+    },
+    computed: {
+      ...mapState({
+        'lang': state => state.lang,
+      }),
+    },
+    methods: {
+      ...mapActions(['switchLang','getTOC'])
+    }
   }
 </script>
 

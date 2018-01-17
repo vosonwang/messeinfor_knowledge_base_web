@@ -69,7 +69,7 @@
             Request.fetchAsync('/tokens', 'post', _self.loginForm).then(data => {
               _self.loading = false;
               if (!data) {
-                /*TODO */
+                /*TODO 改为在登录界面中提示错误*/
                 console.log(_self.$refs[name])
               } else {
                 if (data === "用户名密码错误！") {
@@ -79,9 +79,9 @@
                   })
                 } else {
                   /*登录成功后，先设定cookie，因为之后马上要请求数据，必须要有token
-                  * 设定token有效期为1小时
+                  * 设定token有效期为2小时
                   * */
-                  cookie.setCookie("Authorization", data.token, 1 / 24);
+                  cookie.setCookie("Authorization", data.token, 1);
                   _self.switchLogin(false);
                 }
 

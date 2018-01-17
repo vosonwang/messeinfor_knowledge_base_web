@@ -9,25 +9,22 @@
     <div slot="header">
       <div class="badge">
         <ButtonGroup size="small">
-          <template v-if="true">
-            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'home'}">
+          <template v-if="!lang">
+            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'home',params: { lang: 'zh-CN' }}">
               <Icon type="home"></Icon>
             </router-link>
           </template>
           <template v-else>
-            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'home'}">
+            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'home',params: { lang: 'en-US' }}">
               <Icon type="home"></Icon>
             </router-link>
           </template>
-          <template v-if="true">
-            <router-link class="ivu-btn ivu-btn-ghost "
-                         :to="{ name: 'admin', params: { lang: 'zh-CN' }}">中文
-            </router-link>
+
+          <template v-if="lang">
+            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'admin',params: { lang: 'zh-CN' }}">中文</router-link>
           </template>
           <template v-else>
-            <router-link class="ivu-btn ivu-btn-ghost "
-                         :to="{ name: 'admin', params: { lang: 'zh-CN' }}">EN
-            </router-link>
+            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'admin',params: { lang: 'en-US' }}">EN</router-link>
           </template>
         </ButtonGroup>
       </div>
@@ -55,12 +52,30 @@
       Editor
     },
     beforeRouteUpdate(to, from, next) {
-      this.switchLang(to.params.lang)
-      this.getTOC(this.lang)
+      const path = to.path;
+      if (path === '/admin/zh-CN') {
+        this.switchLang('zh-CN');
+        this.getTOC(0)
+      } else if (path === '/admin/en-US') {
+        this.switchLang('en-US');
+        this.getTOC(1)
+      } else {
+        this.$route.push({name: '404'})
+      }
       next()
     },
     mounted() {
-      this.switchLang(this.$route.params.lang)
+      const path = this.$route.path;
+      if (path.includes('zh-CN')) {
+        this.switchLang('zh-CN');
+        this.getTOC(0)
+      } else if (path.includes('en-US')) {
+        this.switchLang('en-US');
+        this.getTOC(1)
+      } else {
+        this.$route.push({name: '404'})
+      }
+
     },
     computed: {
       ...mapState({

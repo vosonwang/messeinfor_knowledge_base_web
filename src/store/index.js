@@ -16,6 +16,7 @@ const state = {
   TOC: [],
   editor: false,
   doc: {},
+  doc_en: {},
   lang: 0
 }
 
@@ -24,6 +25,7 @@ const SWITCH_LANG = 'SWITCH_LANG'
 const SWITCH_EDITOR = 'SWITCH_EDITOR'
 const GET_TOC = 'GET_TOC'
 const GET_DOC = 'GET_DOC'
+const GET_DOC_EN = 'GET_DOC_EN'
 
 const mutations = {
   [SWITCH_LOGIN](state, bool) {
@@ -41,12 +43,18 @@ const mutations = {
   [GET_DOC](state, doc) {
     state.doc = doc
   },
+  [GET_DOC_EN](state, doc_en) {
+    state.doc = doc_en
+  },
 }
 
 
 const actions = {
   getDoc({commit}, doc) {
     commit(GET_DOC, doc)
+  },
+  getDocEn({commit}, doc) {
+    commit(GET_DOC_EN, doc)
   },
   switchEditor({commit}, bool) {
     commit(SWITCH_EDITOR, bool)
@@ -75,6 +83,8 @@ const actions = {
     Request.fetchAsync('/admin/docs/' + lang, 'get').then(rs => {
       if (rs) {
         commit(GET_TOC, rs)
+      } else if (rs === null) {
+        commit(GET_TOC, [])
       }
     })
   }
