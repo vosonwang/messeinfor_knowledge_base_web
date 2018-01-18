@@ -3,11 +3,10 @@ import Vuex from 'vuex'
 import createLogger from 'vuex/dist/logger'
 import util from '../util'
 import Request from '../util/request'
+import moment from 'moment'
+import debug from '../util/debug'
 
-
-Vue.use(Vuex)
-
-const debug = process.env.NODE_ENV !== 'production'
+Vue.use(Vuex);
 
 
 // initial state
@@ -16,23 +15,16 @@ const state = {
   TOC: [],
   editor: false,
   doc: {},
-  doc_en: {},
-  lang: 0
-}
+};
 
-const SWITCH_LOGIN = 'SWITCH_LOGIN'
-const SWITCH_LANG = 'SWITCH_LANG'
-const SWITCH_EDITOR = 'SWITCH_EDITOR'
-const GET_TOC = 'GET_TOC'
-const GET_DOC = 'GET_DOC'
-const GET_DOC_EN = 'GET_DOC_EN'
+const SWITCH_LOGIN = 'SWITCH_LOGIN';
+const SWITCH_EDITOR = 'SWITCH_EDITOR';
+const GET_TOC = 'GET_TOC';
+const GET_DOC = 'GET_DOC';
 
 const mutations = {
   [SWITCH_LOGIN](state, bool) {
     state.login = bool
-  },
-  [SWITCH_LANG](state, int) {
-    state.lang = int
   },
   [SWITCH_EDITOR](state, bool) {
     state.editor = bool
@@ -42,29 +34,23 @@ const mutations = {
   },
   [GET_DOC](state, doc) {
     state.doc = doc
-  },
-  [GET_DOC_EN](state, doc_en) {
-    state.doc = doc_en
-  },
-}
+  }
+};
 
 
 const actions = {
   getDoc({commit}, doc) {
     commit(GET_DOC, doc)
   },
-  getDocEn({commit}, doc) {
-    commit(GET_DOC_EN, doc)
+  requireDoc({commit}, {id: id, lang: lang}) {
+    let int = 0;
+    if (lang === 'en') {
+      int = 1;
+    }
+    return Request.fetchAsync("/docs/" + id, "get", null, {"id": int})
   },
   switchEditor({commit}, bool) {
     commit(SWITCH_EDITOR, bool)
-  },
-  switchLang({commit}, lang) {
-    let int = 0
-    if (lang === 'en-US') {
-      int = 1
-    }
-    commit(SWITCH_LANG, int)
   },
   switchLogin({commit}, bool) {
     if (!bool) {
@@ -81,14 +67,14 @@ const actions = {
   },
   getTOC({commit}, lang) {
     Request.fetchAsync('/admin/docs/' + lang, 'get').then(rs => {
-      if (rs) {
+      if (!!rs) {
         commit(GET_TOC, rs)
-      } else if (rs === null) {
+      }else if(rs === null) {
         commit(GET_TOC, [])
       }
     })
-  }
-}
+  },
+};
 
 const getters = {
   comTOC: state => {
@@ -96,14 +82,26 @@ const getters = {
       return []
     }
     return util.combine(util.addAttr(state.TOC))
+  },
+  created: state => {
+    if (state.doc.created === undefined) {
+      return ""
+    }
+    return moment(state.doc.created).utc().format('YYYY-MM-DD HH:mm:ss')
+  },
+  updated: state => {
+    if (state.doc.created === undefined) {
+      return ""
+    }
+    return moment(state.doc.updated).utc().format('YYYY-MM-DD HH:mm:ss')
   }
-}
+};
 
 export default new Vuex.Store({
   state,
   actions,
   getters,
   mutations,
-  strict: debug,
-  plugins: debug !== debug ? [createLogger()] : []
+  // TODO update template
+  plugins: debug ? [createLogger({})] : []  //如果是开发版本则输出mutation日志到控制台
 })

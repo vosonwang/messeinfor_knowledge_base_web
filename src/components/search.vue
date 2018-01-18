@@ -21,7 +21,6 @@
   export default {
     data() {
       return {
-        placeholder: this.$t('search.placeholder'),
         value4: '',
         data4: [
           {
@@ -65,6 +64,11 @@
             ]
           }
         ]
+      }
+    },
+    computed:{
+      placeholder:function () {
+        return this.$t('search.placeholder')
       }
     }
   }

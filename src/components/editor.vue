@@ -1,21 +1,16 @@
 <style>
-  .v-note-wrapper div.v-note-panel {
-    box-shadow: none
-  }
-
-  .v-note-wrapper div.v-note-op {
-    box-shadow: none
-  }
+  @import '../style/mavon.css';
 </style>
 
 <template>
   <Modal v-model="modal" width="1200" id="editor">
     <div slot="header">
-      <Input v-model="title" style="width: 50%" placeholder="标题"></Input>
-      <Input v-model="alias" style="width: 30%" placeholder="别名"></Input>
+      <Input :value="this.doc.title" @on-blur="handlerBlur" style="width: 50%" placeholder="标题"></Input>
+      <Input :value="this.doc.name" @on-blur="handlerBlur" style="width: 30%" placeholder="别名"></Input>
     </div>
-    <mavon-editor ref=md default_open="edit" @subfieldtoggle="subfieldCallback" v-model="text" :toolbars=this.toolbars
-                  :ishljs="false" @save="saveArticle" @imgAdd="uploadImg" placeholder="写点什么..."></mavon-editor>
+    <mavon-editor ref=md default_open="edit" @subfieldtoggle="subfieldCallback" :value="this.doc.text"
+                  :toolbars=this.toolbars
+                  @save="saveArticle" @imgAdd="uploadImg" placeholder="写点什么..."></mavon-editor>
     <div class="ivu-upload ivu-upload-select" ref="diy">
       <input type="file" class="ivu-upload-input" ref="input" @change="uploadFile">
       <button type="button" class="op-icon fa " aria-hidden="true" title="上传附件" style="margin-left: 3px"
@@ -26,19 +21,18 @@
     <div slot="footer">
       <Row>
         <Col span="19">
-        创建时间：{{createTime}}</Col>
+        创建时间：{{created}}</Col>
         <Col span="5">
-        更新时间：{{modifyTime}}</Col>
+        更新时间：{{updated}}</Col>
       </Row>
     </div>
   </Modal>
 </template>
 
 <script>
-  import {mapActions, mapState} from 'vuex'
+  import {mapActions, mapGetters, mapState} from 'vuex'
   import {mavonEditor} from 'mavon-editor'
   import 'mavon-editor/dist/css/index.css'
-  import moment from 'moment'
   import Request from '../util/request'
   import utf8 from 'utf8'
   import ISwitch from "iview/src/components/switch/switch";
@@ -106,58 +100,46 @@
           this.switchEditor(v)
         }
       },
-      title: {
-        get: function () {
-          return this.doc.title
-        },
-        set: function (v) {
-          let _self = this, n = JSON.parse(JSON.stringify(_self.doc));
-          n.title = v;
-          this.getDoc(n)
-        }
-      },
-      alias: {
-        get: function () {
-          return this.doc.name
-        },
-        set: function (v) {
-          let _self = this, n = JSON.parse(JSON.stringify(_self.doc));
-          n.name = v;
-          this.getDoc(n)
-        }
-      },
-      text: {
-        get: function () {
-          return this.doc.text
-        },
-        set: function (v) {
-          let _self = this, n = JSON.parse(JSON.stringify(_self.doc));
-          n.text = v;
-          this.getDoc(n)
+      lang: function () {
+        if (this.$i18n.locale === 'zh') {
+          return 0
+        } else {
+          return 1
         }
       },
       ...mapState({
-          'editor': state => state.editor,
-          'doc': state => state.doc,
-          'lang': state => state.lang,
-        }
-      ),
-      createTime: function () {
-        return moment(this.doc.created).utc().format('YYYY-MM-DD HH:mm:ss')
-      },
-      modifyTime: function () {
-        return moment(this.doc.updated).utc().format('YYYY-MM-DD HH:mm:ss')
-      },
+        'editor': state => state.editor,
+        'doc': state => state.doc,
+      }),
+      ...mapGetters([
+        'created',
+        'updated'
+      ]),
     },
     methods: {
+      handlerBlur: function (e) {
+        let _self = this,
+          n = JSON.parse(JSON.stringify(_self.doc)),
+          value = e.target.value;
+        if (e.target.placeholder === '别名') {
+          n.name = value
+        }
+
+        if (e.target.placeholder === '标题') {
+          n.title = value
+        }
+
+        this.getDoc(n)
+      },
       /*点击双栏模式的回调函数*/
       subfieldCallback: function () {
         /*在点击双栏模式后，迫使预览模式的值和双栏模式保持一致*/
         this.$children[0].s_preview_switch = this.$children[0].s_subfield
       },
-      saveArticle: function () {
-        let _self = this;
-        Request.fetchAsync('/admin/docs/' + _self.doc.id, 'put', _self.doc).then(data => {
+      saveArticle: function (value, render) {
+        let _self = this, n = JSON.parse(JSON.stringify(_self.doc));
+        n.text = value;
+        Request.fetchAsync('/admin/docs/' + _self.doc.id, 'put', n).then(data => {
           if (!!data) {
             _self.getDoc(data);
             _self.getTOC(_self.lang)
@@ -193,7 +175,7 @@
           }
         )
       },
-      ...mapActions(['getArticle', 'switchEditor', 'getDoc', 'getDoCEn', 'getTOC'])
+      ...mapActions(['getDoc', 'getTOC','switchEditor'])
     }
 
   }

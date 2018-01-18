@@ -7,7 +7,7 @@
       <search></search>
       <div class="badge">
         <ButtonGroup size="small">
-          <template v-if="!lang">
+          <template v-if="$i18n.locale==='zh'">
             <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'admin', params: { lang: 'zh-CN' }}">
               <Icon type="person"></Icon>
             </router-link>
@@ -17,7 +17,7 @@
               <Icon type="person"></Icon>
             </router-link>
           </template>
-          <template v-if="lang">
+          <template v-if="$i18n.locale==='en'">
             <router-link class="ivu-btn ivu-btn-ghost "
                          :to="{ name: 'home', params: { lang: 'zh-CN' }}">中文
             </router-link>
@@ -38,7 +38,7 @@
 <script>
   import vBase from '../components/base'
   import search from '../components/search'
-  import {mapActions, mapState} from 'vuex'
+  import {mapActions} from 'vuex'
 
   export default {
     name: 'home',
@@ -46,31 +46,28 @@
       vBase,
       search
     },
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        vm.getPath(to.path);
+      })
+    },
     beforeRouteUpdate(to, from, next) {
       this.getPath(to.path);
       next()
     },
-    mounted() {
-      this.getPath(this.$route.path)
-    },
-    computed: {
-      ...mapState({
-        'lang': state => state.lang,
-      }),
-    },
     methods: {
       getPath(path) {
         if (path === '/kb/zh-CN') {
-          this.switchLang('zh-CN');
-          this.getTOC(1)
-        } else if (path === '/kb/en-US') {
-          this.switchLang('en-US');
+          this.$i18n.locale = 'zh';
           this.getTOC(0)
+        } else if (path === '/kb/en-US') {
+          this.$i18n.locale = 'en';
+          this.getTOC(1)
         } else {
           this.$router.push({name: '404'})
         }
       },
-      ...mapActions(['switchLang', 'getTOC'])
+      ...mapActions(['getTOC'])
     }
   }
 </script>

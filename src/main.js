@@ -10,15 +10,20 @@ import local from './i18n'
 import iView from 'iview'
 import en_US from 'iview/dist/locale/en-US'
 import zh_CN from 'iview/dist/locale/zh-CN'
-import './theme/index.less';
-import Util from "./util";
+import './theme/index.less'
+import Util from "./util"
+import debug from './util/debug'
 
 Vue.use(VueRouter);
 Vue.use(VueI18n);
 Vue.use(iView);
 
 
-Vue.config.productionTip = false
+//是否允许 vue-devtools 检查代码。开发版本默认为 true
+Vue.config.devtools = debug;
+
+//是否显示开发版本提示
+Vue.config.productionTip = false;
 
 //多语言配置
 const messages = {
@@ -40,19 +45,17 @@ const RouterConfig = {
 }
 
 
-const router = new VueRouter(RouterConfig)
+const router = new VueRouter(RouterConfig);
 
 router.beforeEach((to, from, next) => {
-  iView.LoadingBar.start()
-  Util.title(to.meta.title);
+  iView.LoadingBar.start();
   next()
-})
+});
 
 router.afterEach((to, from, next) => {
-  iView.LoadingBar.finish()
-  Util.title(to.meta.title);
+  iView.LoadingBar.finish();
   window.scrollTo(0, 0)
-})
+});
 
 
 new Vue({
@@ -62,4 +65,4 @@ new Vue({
   router: router,
   components: {App},
   template: '<App/>',
-})
+});

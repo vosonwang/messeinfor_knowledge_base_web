@@ -1,16 +1,16 @@
-let util = {}
+let util = {};
 util.title = function (title) {
-  title = title ? title : 'Messeinfor KB'
+  title = title ? title : 'Messeinfor Knowledge Base';
   window.document.title = title
-}
+};
 
 util.addAttr = (data) => {
   data.forEach(function (v) {
-    v.active = false
+    v.active = false;
     v.expand = true
-  })
+  });
   return data
-}
+};
 
 /*
 * 组织目录树
@@ -24,26 +24,26 @@ util.combine = (rows) => {
     return false
   }
 
-  let nodes = []
+  let nodes = [];
   // get the top level nodes
   for (let i = 0; i < rows.length; i++) {
-    let row = rows[i]
+    let row = rows[i];
     if (!exists(rows, row.parent_id)) {
       nodes.push(row)
     }
   }
 
-  let toDo = []
+  let toDo = [];
   for (let i = 0; i < nodes.length; i++) {
     toDo.push(nodes[i])
   }
   while (toDo.length) {
-    let node = toDo.shift()    // the parent node
+    let node = toDo.shift();   // the parent node
     // get the children nodes
     for (let i = 0; i < rows.length; i++) {
-      let row = rows[i]
+      let row = rows[i];
       if (row.parent_id === node.id) {
-        let child = row
+        let child = row;
         if (node.children) {
           node.children.push(child)
         } else {
@@ -54,6 +54,6 @@ util.combine = (rows) => {
     }
   }
   return nodes
-}
+};
 
 export default util

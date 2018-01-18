@@ -16,14 +16,19 @@
 
 <script>
   import Request from '../util/request'
-  import {mapActions, mapGetters, mapState} from 'vuex'
+  import {mapActions, mapGetters} from 'vuex'
+  import log from '../util/log'
 
   export default {
     name: "TOC",
     computed: {
-      ...mapState({
-        'lang': state => state.lang,
-      }),
+      lang: function () {
+        if (this.$i18n.locale === 'zh') {
+          return 0
+        } else {
+          return 1
+        }
+      },
       ...mapGetters([
         'comTOC'
       ]),
@@ -216,6 +221,23 @@
                 }
               }
             }),
+            h('Button', {
+              props: Object.assign({}, this.buttonProps, {
+                icon: 'eye',
+                type: 'ghost',
+                size: 'small'
+
+              }),
+              style: {
+                marginRight: '8px',
+
+              },
+              on: {
+                click: () => {
+                  this.viewDoc(data)
+                }
+              }
+            }),
           ])
         ])
       },
@@ -234,8 +256,16 @@
 
         })
       },
+      viewDoc(data) {
+        log.print(data);
+        let a = 'zh-CN';
+        if (this.lang === 1) {
+          a = 'en-US'
+        }
+        this.$router.push({name: 'doc', params: {lang: a, id: data.id}})
+      },
       append(node, data) {
-        const children = data.children || []
+        const children = data.children || [];
 
         let newNode = {
           title: "新文档",
@@ -243,13 +273,13 @@
           active: false,
           lang: this.lang,
           parent_id: node.node.id,
-        }, _self = this
+        }, _self = this;
 
         Request.fetchAsync("/admin/docs", "post", newNode).then(rs => {
             if (!!rs) {
-              newNode.id = rs.id
-              newNode.alias_id = rs.alias_id
-              children.push(newNode)
+              newNode.id = rs.id;
+              newNode.alias_id = rs.alias_id;
+              children.push(newNode);
               _self.$set(data, 'children', children)
             }
           }
@@ -299,7 +329,8 @@
 
         }
       },
-      ...mapActions(['getTOC', 'switchEditor', 'getDoc',])
+
+      ...mapActions(['getTOC', 'getDoc', 'switchEditor'])
     }
   }
 </script>

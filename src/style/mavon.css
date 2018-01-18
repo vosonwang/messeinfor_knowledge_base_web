@@ -1,0 +1,15 @@
+.v-note-wrapper div.v-note-panel {
+  box-shadow: none
+}
+
+.v-note-wrapper div.v-note-op {
+  box-shadow: none
+}
+
+.v-note-wrapper .v-note-panel .v-note-show div.v-show-content {
+  background: white;
+}
+
+div.v-note-wrapper{
+  z-index: 400;
+}

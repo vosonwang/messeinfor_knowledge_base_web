@@ -2,7 +2,6 @@
   .wrap {
     margin: 20px auto;
     width: 80%;
-    text-align: center
   }
 
   .badge {
