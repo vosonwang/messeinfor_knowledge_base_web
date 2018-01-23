@@ -1,42 +1,75 @@
 <style>
   @import '../style/toc.less';
+  @import '../style/search.less';
 </style>
 
 <template>
-  <div>
-    <Tree :data="tree" :render="renderContent"></Tree>
-  </div>
+  <v-base>
+    <Card slot="content" dis-hover :style="{margin:'20px auto',width:'80%'}">
+
+      <Login></Login>
+
+      <Tree :data="tree" :render="renderContent"></Tree>
+
+      <Modal v-model="modal" @on-ok="ok" @on-visible-change="modalChange">
+        <Form :model="form" :label-width="0">
+          <FormItem>
+            <Input v-model="form.description" placeholder="描述"></Input>
+          </FormItem>
+          <FormItem>
+            <Input v-model="form.name" placeholder="别名"></Input>
+          </FormItem>
+          <FormItem>
+            <AutoComplete v-model="form.title_cn" @on-search="searchCNTitle" @on-select="selectTitleCN"
+                          icon="ios-search"
+                          placeholder="中文" clearable>
+              <div class="demo-auto-complete-item">
+                <template>
+                  <Option v-for="i in titlesCN" :value="i.title" :key="i.id">{{i.title}}</Option>
+                </template>
+              </div>
+              <div class="demo-auto-complete-nomore">
+                <span>没有更多结果</span>
+              </div>
+            </AutoComplete>
+          </FormItem>
+          <FormItem>
+            <AutoComplete v-model="form.title_en" @on-search="searchENTitle" icon="ios-search"
+                          @on-select="selectTitleEN"
+                          placeholder="英文" clearable>
+              <div class="demo-auto-complete-item">
+                <template>
+                  <Option v-for="i in titlesEN" :value="i.title" :key="i.id">{{i.title}}</Option>
+                </template>
+              </div>
+              <div class="demo-auto-complete-nomore">
+                <span>No More</span>
+              </div>
+            </AutoComplete>
+          </FormItem>
+        </Form>
+      </Modal>
+    </Card>
+  </v-base>
 </template>
 
 <script>
+  import vBase from '../components/base'
+  import Login from '../components/login'
   import Request from '../util/request'
-  import {mapActions, mapMutations, mapState} from 'vuex'
   import util from '../util'
-  import cookie from '../util/cookie'
+  import _ from 'lodash'
 
   export default {
-    name: "TOC",
-    computed: {
-      ...mapState({
-        'TOC': state => state.TOC
-      }),
-    },
-    watch: {
-      TOC: {
-        handler: function (val, oldval) {
-          /*一旦全局tocs变化，则更新目录*/
-          this.tree[0].children = JSON.parse(JSON.stringify(val))
-        }
-      },
-      /*切换根目录的中英文显示*/
-      '$i18n.locale': {
-        handler: function (val, oldVal) {
-          this.tree[0].title = this.$t('toc.title')
-        }
-      }
+    name: "alias",
+    components: {
+      vBase,
+      Login,
     },
     data() {
       return {
+        modal: false,
+        form: {},
         tree: [
           {
             id: "00000000-0000-0000-0000-000000000000",
@@ -95,10 +128,15 @@
               ])
             },
             children: []
-
           }
         ],
+        titlesCN: [],
+        titlesEN: [],
       }
+    },
+    created() {
+      /*TODO 不能保证登录后会再次发起请求*/
+      this.allAlias()
     },
     methods: {
       renderContent(h, {root, node, data}) {
@@ -182,22 +220,6 @@
               }
             }),
             h('Button', {
-              props: Object.assign({}, this.buttonProps, {
-                icon: 'ios-arrow-up',
-                type: 'ghost',
-                size: 'small'
-
-              }),
-              style: {
-                marginRight: '8px',
-              },
-              on: {
-                click: () => {
-                  this.upward(root, node, data)
-                }
-              }
-            }),
-            h('Button', {
               /*将全局buttonProps和{icon:''}拼在一起给到props*/
               props: Object.assign({}, this.buttonProps, {
                 icon: 'android-create',
@@ -236,17 +258,15 @@
         ])
       },
       append(node, data) {
-        /*打开编辑器，会引发清空doc的操作，因此要放在前面执行*/
-        this.SWITCH_EDITOR(true);
-        this.UPDATE_DOC({"type": "creator", "value": cookie.getCookie('userId')});
-        this.UPDATE_DOC({"type": "parent_id", "value": node.node.id});
+        this.modal = true;
+        this.form.parent_id = node.node.id
       },
       remove(root, node, data) {
         if (!node.children || node.children.length === 0) {
           const parentKey = root.find(el => el === node).parent;
           const parent = root.find(el => el.nodeKey === parentKey).node;
           const index = parent.children.indexOf(data);
-          Request.fetchAsync('/admin/docs/' + data.id, 'delete').then(rs => {
+          Request.fetchAsync('/admin/alias/' + data.id, 'delete').then(rs => {
             if (rs) {
               parent.children.splice(index, 1)
             }
@@ -259,41 +279,12 @@
           })
         }
       },
-      upward(root, node, data) {
-        const parentKey = root.find(el => el === node).parent;
-        const parent = root.find(el => el.nodeKey === parentKey).node;
-        const index = parent.children.indexOf(data);
-        const length = parent.children.length;
-        if (index !== 0) {
-
-          Request.fetchAsync('/admin/nodes/' + data.alias_id, 'patch',
-            {"id": parent.children[index - 1].alias_id}
-          ).then(result => {
-            if (!!result) {
-              /*移除选中状态*/
-              data.active = false;
-              parent.children = parent.children.slice(0, index - 1).concat(
-                parent.children.slice(index, index + 1),
-                parent.children.slice(index - 1, index),
-                parent.children.slice(index + 1, length)
-              )
-
-            }
-          })
-
-
-        }
-      },
       editDoc(data) {
-        Request.fetchAsync('/docs/' + data.id, 'get').then(rs => {
-          if (rs.text === undefined || rs.text === null) {
-            this.$Message.error({
-              content: "获取文档失败！",
-              duration: 2
-            })
-          } else {
-            this.getDoc(rs);
-            this.SWITCH_EDITOR(true);
+        this.modal = true;
+        Request.fetchAsync('/admin/alias/' + data.id, 'get').then(rs => {
+          if (rs) {
+            this.form = rs;
+            this.modal = true
           }
         })
       },
@@ -301,13 +292,77 @@
         this.$router.push({
           name: 'doc',
           params: {
-            lang: util.getLangPath(this.$i18n.locale),
-            id: data.id
+            lang: this.$i18n.locale,
+            alias: data.name
           }
         })
       },
-      ...mapMutations(['UPDATE_DOC', 'SWITCH_EDITOR']),
-      ...mapActions(['getTOC', 'switchLogin'])
+      modalChange(value) {
+        /*初始化表单*/
+        if (!value) {
+          this.form = {}
+        }
+      },
+      ok() {
+        Request.fetchAsync('/admin/alias', 'post', this.form).then(rs => {
+          if (rs) this.allAlias()
+        })
+      },
+      addTitle(data) {
+        data.forEach(function (v) {
+          v.title = v.description + " " + v.name + " #" + v.title_cn + "# #" + v.title_en + "#"
+        });
+        return data
+      },
+      allAlias() {
+        Request.fetchAsync('/admin/alias', 'get').then(rs => {
+          /*未登录时，rs为undefined*/
+          if (!!rs) {
+            this.tree[0].children = util.combine(util.addAttr(this.addTitle(rs)))
+          }
+        })
+      },
+
+      /*搜索*/
+      searchCNTitle: _.debounce(function (value) {
+        if (value) {
+          let _self = this;
+          Request.fetchAsync("/admin/titles", "post", {
+            "lang": 0,
+            "title": value
+          }).then(rs => _self.titlesCN = rs)
+        } else {
+          this.titlesCN = []
+        }
+      }, 500),
+      selectTitleCN: function (value) {
+        let _self = this;
+        this.titlesCN.forEach(function (v) {
+          if (v.title = value) {
+            _self.form.doc_CN = v.id;
+          }
+        });
+      },
+
+      searchENTitle: _.debounce(function (value) {
+        if (value) {
+          let _self = this;
+          Request.fetchAsync("/admin/titles", "post", {
+            "lang": 1,
+            "title": value
+          }).then(rs => _self.titlesEN = rs)
+        } else {
+          this.titlesEN = [];
+        }
+      }, 500),
+      selectTitleEN: function () {
+        let _self = this;
+        this.titlesEN.forEach(function (v) {
+          if (v.title = value) {
+            _self.form.doc_EN = v.id;
+          }
+        });
+      }
     }
   }
 </script>

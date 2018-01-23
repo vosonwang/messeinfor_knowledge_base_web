@@ -7,14 +7,10 @@
     <div style="text-align: center" slot="header">
       <search></search>
       <div class="badge">
-        <ButtonGroup size="small">
-          <template v-if="$i18n.locale==='en'">
-            <router-link class="ivu-btn ivu-btn-ghost " :to="{ name: 'doc', params: { lang: 'zh-CN' }}">中文</router-link>
-          </template>
-          <template v-else>
-            <router-link class="ivu-btn ivu-btn-ghost " :to="{ name: 'doc', params: { lang: 'en-US' }}">EN</router-link>
-          </template>
-        </ButtonGroup>
+        <Button type="ghost" size="small" @click="handlerClick">
+          <template v-if="!opposite">中文</template>
+          <template v-else>EN</template>
+        </Button>
       </div>
     </div>
     <Card slot="content" dis-hover :style="{margin:'20px auto',width:'80%'}">
@@ -31,11 +27,11 @@
 <script>
   import vBase from '../components/base'
   import search from '../components/search'
-  import {mapActions, mapGetters, mapState} from 'vuex'
+  import {mapGetters, mapState} from 'vuex'
   import {mavonEditor} from 'mavon-editor'
   import 'mavon-editor/dist/css/index.css'
-  import store from '../store'
-  import log from '../util/log'
+  import Request from '../util/request'
+  import util from '../util'
 
   export default {
     name: "doc",
@@ -45,47 +41,42 @@
       mavonEditor
     },
     beforeRouteEnter(to, from, next) {
-      //进入route
-      log.print('进入route');
-      next(vm => {
-        vm.getPath(to.path);
-        store.dispatch('requireDoc', {id: to.path.split("/")[3], lang: vm.$i18n.locale}).then(rs => {
-          if (!!rs) {
-            vm.getDoc(rs);
-            if (rs.title !== '') {
-              window.document.title = rs.title
-            } else {
-              vm.$router.push({name: '404'})
-            }
+      if (to.path.includes("zh-CN") || to.path.includes("en-US")) {
+        /*根据别名请求文档*/
+        vm.alias = true
 
-          } else {
-            vm.$router.push({name: '404'})
-          }
-        });
+      }else {
+        /*根据id请求文档*/
+
+      }
+
+      Request.fetchAsync("/docs/" + to.params.id, 'get').then(rs => {
+        if (!!rs) {
+          window.document.title = rs.title;
+          next(vm => {
+            vm.$i18n.locale = util.setLang(to.path);
+            vm.GET_TOC(rs);
+            vm.requireOppDoc(rs.alias_id)
+          })
+        } else {
+          window.location = "/";
+        }
       })
     },
     beforeRouteUpdate(to, from, next) {
-      /*doc初始化*/
-      log.print('切换语言，初始化Doc');
-      this.getDoc({});
-
       //切换中英文，设置i18n.local
-      this.getPath(to.path);
-      store.dispatch('requireDoc', {id: to.path.split("/")[3], lang: this.$i18n.locale}).then(rs => {
-        if (!!rs) {
-          this.getDoc(rs);
-          if (rs.title !== '') {
-            window.document.title = rs.title
-          } else {
-            this.$router.push({name: '404'})
-          }
-        } else {
-          this.$router.push({name: '404'})
-        }
-      });
+      this.$i18n.locale = util.setLang(to.path);
+      this.GET_TOC(this.doc2);
+      window.document.title = this.doc2.title;
       next()
     },
+    data() {
+      return {
+        alias: false
+      }
+    },
     computed: {
+
       ...mapState({
         'doc': state => state.doc,
       }),
@@ -95,16 +86,27 @@
       ]),
     },
     methods: {
-      getPath(path) {
-        if (path.startsWith('/doc/zh-CN')) {
-          this.$i18n.locale = 'zh';
-        } else if (path.startsWith('/doc/en-US')) {
-          this.$i18n.locale = 'en';
+      /*请求文档*/
+      getDoc(id, lang) {
+
+      },
+
+      handlerClick() {
+        if (this.doc2.id) {
+          this.$router.push({
+            name: 'doc',
+            params: {
+              lang: util.langParse(this.$i18n.locale),
+              id: this.doc2.id
+            }
+          })
         } else {
-          //this.$router.push({name: '404'})
+          this.$Message.warning({
+            content: this.$t('doc.isNotExit'),
+            duration: 2
+          })
         }
       },
-      ...mapActions(['requireDoc', 'getDoc'])
     }
   }
 </script>

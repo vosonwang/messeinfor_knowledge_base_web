@@ -21,6 +21,8 @@
 
 <script>
   import vBase from '../components/base'
+  import util from '../util'
+
 
   export default {
     components: {
@@ -28,18 +30,9 @@
     },
     beforeRouteEnter(to, from, next) {
       next(vm => {
-        vm.getPath(from.path);
+        util.setLang(vm, from.path);
       })
     },
-    methods: {
-      getPath(path) {
-        if (path.includes('zh-CN')) {
-          this.$i18n.locale = 'zh';
-        } else if (path.includes('en-US')) {
-          this.$i18n.locale = 'en';
-        }
-      }
-    }
   }
 </script>
 

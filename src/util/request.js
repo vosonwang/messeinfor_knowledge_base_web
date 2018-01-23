@@ -12,14 +12,15 @@ const status = (response) => {
   else {
     return Promise.reject(new Error(response.statusText))
   }
-}
+};
 
 
 const json = (response) => {
   return response.json()
-}
+};
 
 Request.fetchAsync = async (url, method, data, headerArg) => {
+  log.print('Request：' + method + ":" + url);
   let header = new Headers(),
     //method字符串转为大写
     capMethod = method.toUpperCase(), proData = data;
@@ -56,13 +57,17 @@ Request.fetchAsync = async (url, method, data, headerArg) => {
   } catch (e) {
     switch (e.message) {
       case "Unauthorized":
+        log.print('Request：登录超时！');
+        store.dispatch('switchLogin', true);
+        break;
       case "用户未登录！":
+        log.print('Request：用户未登录！');
         store.dispatch('switchLogin', true);
         break;
       default:
-        log.print(e.message);
+        log.print('Request：请求异常，异常信息：' + e.message);
     }
   }
-}
+};
 
 export default Request;

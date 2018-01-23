@@ -1,9 +1,12 @@
+import moment from "moment";
+
 let util = {};
 util.title = function (title) {
   title = title ? title : 'Messeinfor Knowledge Base';
   window.document.title = title
 };
 
+/*向目录树每个节点中添加"扩展"和"激活"两个值*/
 util.addAttr = (data) => {
   data.forEach(function (v) {
     v.active = false;
@@ -54,6 +57,35 @@ util.combine = (rows) => {
     }
   }
   return nodes
+};
+
+/*转换语言的代号*/
+util.langParse = (lang) => {
+  switch (typeof lang) {
+    case 'string':
+      switch (lang) {
+        case "zh-CN":
+          return 0;
+        case "en-US":
+          return 1;
+      }
+      break;
+    case 'number':
+      switch (lang) {
+        case 0:
+          return "zh-CN";
+        case 1:
+          return "en-US";
+      }
+      break;
+  }
+};
+
+util.convertCST = (cst) => {
+  if (cst === undefined) {
+    return ""
+  }
+  return moment(cst).format('YYYY-MM-DD HH:mm:ss')
 };
 
 export default util

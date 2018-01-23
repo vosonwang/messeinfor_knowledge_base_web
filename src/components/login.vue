@@ -1,5 +1,5 @@
-<style scoped>
-
+<style lang="less">
+  @import "../style/login.less";
 </style>
 
 <template>
@@ -27,6 +27,9 @@
   import {mapActions, mapState} from 'vuex'
   import Request from '../util/request'
   import cookie from '../util/cookie'
+  import log from '../util/log'
+  import util from '../util'
+
 
   export default {
     name: "login",
@@ -74,24 +77,28 @@
               } else {
                 if (data === "用户名密码错误！") {
                   _self.$Message.error({
-                    content: "用户名或密码错误！",
+                    content: data,
                     duration: 2,
                   })
                 } else {
+                  log.print('login：登录成功');
+                  this.switchLogin(false);
                   /*登录成功后，先设定cookie，因为之后马上要请求数据，必须要有token
                   * 设定token有效期为2小时
                   * */
                   cookie.setCookie("Authorization", data.token, 1);
-                  _self.switchLogin(false);
+                  cookie.setCookie("username", data.username, 1);
+                  cookie.setCookie("userId", data.userId, 1);
+                  log.print('login：getTOC(0)');
+                  //应该改成 login状态监听 有变化则toc组件更新目录
+                  this.getTOC(util.langParse(this.$i18n.locale))
                 }
-
               }
             })
-
           }
         })
       },
-      ...mapActions(['getTOC'])
+      ...mapActions(['getTOC', 'switchLogin'])
 
     }
   }

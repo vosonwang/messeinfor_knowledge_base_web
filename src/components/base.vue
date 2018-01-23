@@ -1,21 +1,5 @@
 <style>
-  .wrap {
-    margin: 20px auto;
-    width: 80%;
-  }
-
-  .badge {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    line-height: 24px
-  }
-
-  .layout-header-bar {
-    background: #fff;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
-  }
-
+  @import '../style/base.css';
 </style>
 <template>
   <Layout>

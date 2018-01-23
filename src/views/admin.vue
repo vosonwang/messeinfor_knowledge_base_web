@@ -9,29 +9,20 @@
     <div slot="header">
       <div class="badge">
         <ButtonGroup size="small">
-          <template v-if="$i18n.locale==='zh'">
-            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'home',params: { lang: 'zh-CN' }}">
-              <Icon type="home"></Icon>
-            </router-link>
-          </template>
-          <template v-else>
-            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'home',params: { lang: 'en-US' }}">
-              <Icon type="home"></Icon>
-            </router-link>
-          </template>
+          <!--<Button type="ghost" size="small" @click="backHome">-->
+          <!--<Icon type="home"></Icon>-->
+          <!--</Button>-->
 
-          <template v-if="$i18n.locale==='en'">
-            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'admin',params: { lang: 'zh-CN' }}">中文</router-link>
-          </template>
-          <template v-else>
-            <router-link class="ivu-btn ivu-btn-ghost" :to="{name:'admin',params: { lang: 'en-US' }}">EN</router-link>
-          </template>
+          <Button type="ghost" size="small" @click="changeLang">
+            <template v-if="$i18n.locale === 'zh-CN'">EN</template>
+            <template v-else>中文</template>
+          </Button>
         </ButtonGroup>
       </div>
     </div>
     <Card slot="content" dis-hover :style="{margin:'20px auto',width:'80%'}">
-      <TOC></TOC>
       <Login></Login>
+      <TOC></TOC>
       <Editor></Editor>
     </Card>
   </v-base>
@@ -41,6 +32,8 @@
   import vBase from '../components/base'
   import Login from '../components/login'
   import Editor from '../components/editor'
+  import log from "../util/log";
+  import util from "../util";
   import {mapActions} from 'vuex'
 
   export default {
@@ -53,24 +46,42 @@
     },
     beforeRouteEnter(to, from, next) {
       next(vm => {
-        vm.getPath(to.path);
+        log.print("admin|i18n旧值:" + vm.$i18n.locale);
+        vm.$i18n.locale = to.path.includes("zh-CN") ? "zh-CN" : "en-US";
+        log.print("admin|i18n新值:" + vm.$i18n.locale);
+        vm.lang = vm.$i18n.locale === "zh-CN" ? "en-US" : "zh-CN";
+        vm.getTOC(util.langParse(vm.$i18n.locale))
       })
     },
     beforeRouteUpdate(to, from, next) {
-      this.getPath(to.path);
+      log.print("admin|i18n旧值:" + this.$i18n.locale);
+      this.$i18n.locale = to.path.includes("zh-CN") ? "zh-CN" : "en-US";
+      log.print("admin|i18n新值:" + this.$i18n.locale);
+      this.lang = this.$i18n.locale === "zh-CN" ? "en-US" : "zh-CN";
+      this.getTOC(util.langParse(this.$i18n.locale));
       next()
     },
+    data() {
+      return {
+        lang: ""
+      }
+    },
     methods: {
-      getPath(path) {
-        if (path === '/admin/zh-CN') {
-          this.$i18n.locale = 'zh';
-          this.getTOC(0)
-        } else if (path === '/admin/en-US') {
-          this.$i18n.locale = 'en';
-          this.getTOC(1)
-        } else {
-          this.$router.push({name: '404'})
-        }
+      // backHome() {
+      //   this.$router.push({
+      //     name: 'home',
+      //     params: {
+      //       lang: this.$i18n.locale
+      //     }
+      //   })
+      // },
+      changeLang() {
+        this.$router.push({
+          name: 'admin',
+          params: {
+            lang: this.lang
+          }
+        })
       },
       ...mapActions(['getTOC'])
     }

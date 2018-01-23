@@ -3,9 +3,14 @@ export default {
     home: {
       success: '成功！'
     },
-    doc:{
-      created:'创建时间：',
-      updated:'更新时间：'
+    doc: {
+      created: '创建时间：',
+      updated: '更新时间：',
+      isNotExit: '相关文档不存在！'
+    },
+    toc: {
+      title: '目录',
+      doc:'新文档'
     },
     search: {
       placeholder: '输入标题或者内容...'
@@ -24,9 +29,14 @@ export default {
     search: {
       placeholder: 'Input title or content...'
     },
-    doc:{
-      created:'created：',
-      updated:'updated：'
+    doc: {
+      created: 'created：',
+      updated: 'updated：',
+      isNotExit: 'No Such File!'
+    },
+    toc: {
+      title: 'TOC',
+      doc:'New Doc'
     },
     request: {
       err: 'Something wrong，contact with the admin!',

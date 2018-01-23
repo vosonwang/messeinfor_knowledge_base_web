@@ -12,6 +12,10 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       /*注意调整顺序，会对有请求影响*/
+      '/admin/titles': {
+        target: 'http://localhost:8300',
+        changeOrigin: true
+      },
       '/docs': {
         target: 'http://localhost:8300',
         changeOrigin: true
@@ -21,6 +25,14 @@ module.exports = {
         changeOrigin: true
       },
       '/admin/alias': {
+        target: 'http://localhost:8300',
+        changeOrigin: true
+      },
+      '/alias': {
+        target: 'http://localhost:8300',
+        changeOrigin: true
+      },
+      '/admin/nodes': {
         target: 'http://localhost:8300',
         changeOrigin: true
       },

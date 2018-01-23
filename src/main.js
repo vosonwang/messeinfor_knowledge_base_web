@@ -10,8 +10,7 @@ import local from './i18n'
 import iView from 'iview'
 import en_US from 'iview/dist/locale/en-US'
 import zh_CN from 'iview/dist/locale/zh-CN'
-import './theme/index.less'
-import Util from "./util"
+import './style/theme.less'
 import debug from './util/debug'
 
 Vue.use(VueRouter);
@@ -27,22 +26,21 @@ Vue.config.productionTip = false;
 
 //多语言配置
 const messages = {
-  en: Object.assign(local['en-US'], en_US),
-  zh: Object.assign(local['zh-CN'], zh_CN)
+  'en-US': Object.assign(local['en-US'], en_US),
+  'zh-CN': Object.assign(local['zh-CN'], zh_CN)
 };
 
 
-// Create VueI18n instance with options
 const i18n = new VueI18n({
-  locale: 'zh',  // set locale
-  messages  // set locale messages
+  locale: 'zh-CN',
+  messages
 });
 
 // 路由配置
 const RouterConfig = {
   mode: 'history',
   routes: Routers
-}
+};
 
 
 const router = new VueRouter(RouterConfig);

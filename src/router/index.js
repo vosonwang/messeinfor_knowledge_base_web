@@ -1,11 +1,21 @@
 export default [
+
   {
-    path: '/admin/:lang',
+    path: '/admin/toc/:lang',
     meta: {
       title: 'admin'
     },
     name: 'admin',
     component: (resolve) => require(['../views/admin.vue'], resolve)
+
+  },
+  {
+    path: '/admin/allalias',
+    meta: {
+      title: 'alias'
+    },
+    name: 'alias',
+    component: (resolve) => require(['../views/alias.vue'], resolve)
 
   },
   {
@@ -15,10 +25,9 @@ export default [
     },
     name: 'home',
     component: (resolve) => require(['../views/home.vue'], resolve)
-
   },
   {
-    path: '/doc/:lang/:id',
+    path: '/doc/:lang/:alias',
     name: 'doc',
     component: (resolve) => require(['../views/doc.vue'], resolve)
 
@@ -31,5 +40,5 @@ export default [
     name: '404',
     component: (resolve) => require(['../views/404.vue'], resolve)
 
-  }
+  },
 ]
