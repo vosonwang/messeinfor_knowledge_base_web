@@ -15,6 +15,15 @@ util.addAttr = (data) => {
   return data
 };
 
+util.hasAlias = (data) => {
+  data.forEach(function (v) {
+    if (v.alias_id !== '00000000-0000-0000-0000-000000000000') {
+      v.title = v.title + ' *'
+    }
+  });
+  return data
+};
+
 /*
 * 组织目录树
 * * arrObj 必须是数组对象，且不能为空
@@ -85,7 +94,11 @@ util.convertCST = (cst) => {
   if (cst === undefined) {
     return ""
   }
-  return moment(cst).format('YYYY-MM-DD HH:mm:ss')
+  if (cst.includes('+08:00')) {
+    return moment(cst).format('YYYY-MM-DD HH:mm:ss')
+  } else {
+    return moment(cst).utc().format('YYYY-MM-DD HH:mm:ss')
+  }
 };
 
 export default util

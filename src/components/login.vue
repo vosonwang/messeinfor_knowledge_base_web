@@ -89,9 +89,8 @@
                   cookie.setCookie("Authorization", data.token, 1);
                   cookie.setCookie("username", data.username, 1);
                   cookie.setCookie("userId", data.userId, 1);
-                  log.print('login：getTOC(0)');
-                  //应该改成 login状态监听 有变化则toc组件更新目录
-                  this.getTOC(util.langParse(this.$i18n.locale))
+                  //TODO 如果能够设置 恢复刚才中断的请求就好了
+                  window.location.reload()
                 }
               }
             })

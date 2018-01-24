@@ -1,5 +1,6 @@
 <style>
   @import '../style/mavon.css';
+  @import '../style/search.less';
 </style>
 
 <template>
@@ -10,9 +11,18 @@
         <Input v-model="title" placeholder="标题"></Input>
         </Col>
         <Col span="6" offset="1">
-        <Select v-model="alias_id" clearable filterable placeholder="别名">
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
+        <AutoComplete v-model="desc" @on-search="searchAlias" icon="ios-search"
+                      @on-select="selectAlias"
+                      placeholder="别名" clearable>
+          <div class="demo-auto-complete-item">
+            <template>
+              <Option v-for="i in aliases" :value="i.description" :key="i.id">{{i.description}}</Option>
+            </template>
+          </div>
+          <div class="demo-auto-complete-nomore">
+            <span>没有更多结果了</span>
+          </div>
+        </AutoComplete>
         </Col>
       </Row>
     </div>
@@ -47,6 +57,7 @@
   import util from '../util'
   import utf8 from 'utf8'
   import cookie from '../util/cookie'
+  import _ from 'lodash'
 
   export default {
     name: "editor",
@@ -55,24 +66,7 @@
     },
     data() {
       return {
-        cityList: [
-          {
-            value: 'f9353281-b386-4ec5-b53e-813744bea3b5',
-            label: 'exhibitorBusiness'
-          },
-          {
-            value: '48ee926c-21e8-4ecf-875f-2fa03efbc279',
-            label: 'Mlist'
-          },
-          {
-            value: 'ea710100-fe61-4175-aa75-41b0c9afbd85',
-            label: 'finance'
-          },
-          {
-            value: '9c2a29f1-41e1-4ac9-a642-f556b77f11d2',
-            label: 'exhibitorBusinessDetail'
-          },
-        ],
+        aliases: [],
         toolbars: {
           bold: true, // 粗体
           italic: true, // 斜体
@@ -117,53 +111,73 @@
       toolbar_left.$el.append(diy)
 
     },
-    watch: {
-      'doc': {
-        handler: function (val, oldval) {
-          this.mavon = JSON.parse(JSON.stringify(val))
-        }
-      },
-    },
     computed: {
-      alias_id: {
-        get: function () {
-          return this.doc.alias_id
+      desc: {
+        get() {
+          return this.description
         },
-        set: function (v) {
-          this.UPDATE_DOC({"type": "alias_id", "value": v})
+        set(v) {
+          this.GET_DESC(v)
         }
       },
       title: {
-        get: function () {
+        get() {
           return this.doc.title
         },
-        set: function (v) {
+        set(v) {
           this.UPDATE_DOC({"type": "title", "value": v})
         }
       },
       modal: {
-        get: function () {
+        get() {
           return this.editor
         },
-        set: function (v) {
+        set(v) {
           this.SWITCH_EDITOR(v)
         }
       },
       ...mapState({
         'editor': state => state.editor,
         'doc': state => state.doc,
-        'creator': state => state.creator,
-        'parent_id': state => state.parent_id,
+        'description': state => state.description,
       }),
       ...mapGetters(['created', 'updated']),
     },
     methods: {
+      /*查找别名*/
+      searchAlias: _.debounce(function (value) {
+        if (value === "") {
+          this.UPDATE_DOC({"type": "alias_id", "value": null});
+          this.aliases = []
+        } else {
+          let _self = this;
+          Request.fetchAsync("/admin/alias", "post", {
+            "description": value
+          }).then(rs => _self.aliases = rs)   //rs的结果可能为null
+        }
+      }, 500),
+      /*选择别名*/
+      selectAlias(value) {
+        let _self = this;
+        if (value) {
+          if (this.aliases !== null && this.aliases !== []) {
+            this.aliases.forEach(function (v) {
+              if (v.description === value) {
+                _self.UPDATE_DOC({"type": "alias_id", "value": v.id})
+              }
+            });
+          }
+        } else {
+          this.UPDATE_DOC({"type": "alias_id", "value": null});
+        }
+      },
       /*点击双栏模式的回调函数*/
-      subfieldCallback: function () {
+      subfieldCallback() {
         /*在点击双栏模式后，迫使预览模式的值和双栏模式保持一致*/
         this.$children[0].s_preview_switch = this.$children[0].s_subfield
       },
-      saveArticle: function (value, render) {
+      /*保存文档*/
+      saveArticle(value) {
         let lang = util.langParse(this.$i18n.locale);
         this.UPDATE_DOC({"type": "text", "value": value});
         this.UPDATE_DOC({"type": "lang", "value": lang});
@@ -171,7 +185,7 @@
         Request.fetchAsync('/admin/docs', 'post', this.doc).then(data => {
           if (!!data) {
             this.GET_DOC(data);
-            this.getTOC(lang);
+            this.getTOC(util.langParse(this.$i18n.locale));
           }
         })
       },
@@ -179,12 +193,12 @@
         /*打开隐藏的上传文件按钮*/
         this.$refs.input.click()
       },
-      uploadImg: function (filename, imgFile) {
+      uploadImg(filename, imgFile) {
         Request.fetchAsync('/admin/images', 'post', imgFile, {}).then(data =>
           this.$refs.md.$img2Url(filename, data)
         )
       },
-      uploadFile: function (e) {
+      uploadFile(e) {
 
         /*获取要上传文件*/
         let a = e.target.files[0];
@@ -204,7 +218,7 @@
           }
         )
       },
-      ...mapMutations(['UPDATE_DOC', 'GET_DOC','SWITCH_EDITOR']),
+      ...mapMutations(['UPDATE_DOC', 'GET_DOC', 'SWITCH_EDITOR', 'GET_DESC']),
       ...mapActions(['getTOC', 'switchLogin'])
     }
 

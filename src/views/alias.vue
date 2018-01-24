@@ -5,6 +5,9 @@
 
 <template>
   <v-base>
+    <div slot="header" style="width: 250px;margin: 0 auto">
+      <Navigate></Navigate>
+    </div>
     <Card slot="content" dis-hover :style="{margin:'20px auto',width:'80%'}">
 
       <Login></Login>
@@ -56,6 +59,7 @@
 <script>
   import vBase from '../components/base'
   import Login from '../components/login'
+  import Navigate from '../components/navigate'
   import Request from '../util/request'
   import util from '../util'
   import _ from 'lodash'
@@ -65,6 +69,15 @@
     components: {
       vBase,
       Login,
+      Navigate
+    },
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        vm.allAlias()
+      })
+    },
+    beforeRouteUpdate(to, from, next) {
+      this.allAlias()
     },
     data() {
       return {
@@ -133,10 +146,6 @@
         titlesCN: [],
         titlesEN: [],
       }
-    },
-    created() {
-      /*TODO 不能保证登录后会再次发起请求*/
-      this.allAlias()
     },
     methods: {
       renderContent(h, {root, node, data}) {
@@ -266,7 +275,7 @@
           const parentKey = root.find(el => el === node).parent;
           const parent = root.find(el => el.nodeKey === parentKey).node;
           const index = parent.children.indexOf(data);
-          Request.fetchAsync('/admin/alias/' + data.id, 'delete').then(rs => {
+          Request.fetchAsync('/admin/alias_titles/' + data.id, 'delete').then(rs => {
             if (rs) {
               parent.children.splice(index, 1)
             }
@@ -281,7 +290,7 @@
       },
       editDoc(data) {
         this.modal = true;
-        Request.fetchAsync('/admin/alias/' + data.id, 'get').then(rs => {
+        Request.fetchAsync('/admin/alias_titles/' + data.id, 'get').then(rs => {
           if (rs) {
             this.form = rs;
             this.modal = true
@@ -300,11 +309,13 @@
       modalChange(value) {
         /*初始化表单*/
         if (!value) {
-          this.form = {}
+          this.form = {};
+          this.titlesCN = [];
+          this.titlesEN = []
         }
       },
       ok() {
-        Request.fetchAsync('/admin/alias', 'post', this.form).then(rs => {
+        Request.fetchAsync('/admin/alias_titles', 'post', this.form).then(rs => {
           if (rs) this.allAlias()
         })
       },
@@ -315,7 +326,7 @@
         return data
       },
       allAlias() {
-        Request.fetchAsync('/admin/alias', 'get').then(rs => {
+        Request.fetchAsync('/admin/alias_titles', 'get').then(rs => {
           /*未登录时，rs为undefined*/
           if (!!rs) {
             this.tree[0].children = util.combine(util.addAttr(this.addTitle(rs)))
@@ -324,44 +335,61 @@
       },
 
       /*搜索*/
+      //TODO 如果是编辑别名，也会自动触发这个方法，发起请求
       searchCNTitle: _.debounce(function (value) {
-        if (value) {
+        if (value === "") {
+          this.form.doc_cn = null;
+          this.titlesCN = [];
+        } else {
           let _self = this;
           Request.fetchAsync("/admin/titles", "post", {
             "lang": 0,
             "title": value
-          }).then(rs => _self.titlesCN = rs)
-        } else {
-          this.titlesCN = []
+          }).then(rs => _self.titlesCN = rs)   //rs的结果可能为null
         }
       }, 500),
-      selectTitleCN: function (value) {
+      selectTitleCN(value) {  //不管value如何变化都会调用这个函数
         let _self = this;
-        this.titlesCN.forEach(function (v) {
-          if (v.title = value) {
-            _self.form.doc_CN = v.id;
-          }
-        });
-      },
-
-      searchENTitle: _.debounce(function (value) {
         if (value) {
+          if (this.titlesCN !== null && this.titlesCN !== []) { //titlesCN可能为[]或者null
+            this.titlesCN.forEach(function (v) {
+              if (v.title === value) {
+                _self.form.doc_cn = v.id;
+              }
+            });
+          }
+        } else {
+          this.form.doc_cn = null
+        }
+
+      },
+      searchENTitle: _.debounce(function (value) {
+        if (value === "") {
+          this.form.doc_en = null;
+          this.titlesEN = [];
+        } else {
           let _self = this;
           Request.fetchAsync("/admin/titles", "post", {
             "lang": 1,
             "title": value
-          }).then(rs => _self.titlesEN = rs)
-        } else {
-          this.titlesEN = [];
+          }).then(rs => _self.titlesEN = rs)  //rs的结果可能为null
         }
+
       }, 500),
-      selectTitleEN: function () {
+      selectTitleEN(value) {
         let _self = this;
-        this.titlesEN.forEach(function (v) {
-          if (v.title = value) {
-            _self.form.doc_EN = v.id;
+        if (value) {
+          if (this.titlesCN !== null && this.titlesCN !== []) {
+            this.titlesEN.forEach(function (v) {
+              if (v.title === value) {
+                _self.form.doc_en = v.id;
+              }
+            });
           }
-        });
+        } else {
+          this.form.doc_en = null
+        }
+
       }
     }
   }

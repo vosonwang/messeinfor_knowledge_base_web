@@ -235,7 +235,7 @@
           ])
         ])
       },
-      append(node, data) {
+      append(node) {
         /*打开编辑器，会引发清空doc的操作，因此要放在前面执行*/
         this.SWITCH_EDITOR(true);
         this.UPDATE_DOC({"type": "creator", "value": cookie.getCookie('userId')});
@@ -285,17 +285,32 @@
         }
       },
       editDoc(data) {
-        Request.fetchAsync('/docs/' + data.id, 'get').then(rs => {
-          if (rs.text === undefined || rs.text === null) {
-            this.$Message.error({
-              content: "获取文档失败！",
-              duration: 2
-            })
-          } else {
-            this.getDoc(rs);
+        //如果别名alias_id存在，则同时发起两个请求：文档和对应的别名
+        if (data.alias_id !== '00000000-0000-0000-0000-000000000000') {
+          Promise.all([Request.fetchAsync('/docs/' + data.id, 'get'), Request.fetchAsync('/alias/' + data.alias_id, 'get')]).then(all => {
+            if (!all[0]) {
+              this.$Message.error({
+                content: "获取文档失败！",
+                duration: 2
+              })
+            } else if (!all[1]) {
+              this.$Message.error({
+                content: "获取别名失败！",
+                duration: 2
+              })
+            } else {
+              this.SWITCH_EDITOR(true);
+              this.GET_DOC(all[0]);
+              this.GET_DESC(all[1].description);
+            }
+
+          })
+        } else {
+          Request.fetchAsync('/docs/' + data.id, 'get').then(rs => {
             this.SWITCH_EDITOR(true);
-          }
-        })
+            this.GET_DOC(rs);
+          })
+        }
       },
       viewDoc(data) {
         this.$router.push({
@@ -306,7 +321,7 @@
           }
         })
       },
-      ...mapMutations(['UPDATE_DOC', 'SWITCH_EDITOR']),
+      ...mapMutations(['UPDATE_DOC', 'SWITCH_EDITOR', 'GET_DOC', 'GET_DESC']),
       ...mapActions(['getTOC', 'switchLogin'])
     }
   }

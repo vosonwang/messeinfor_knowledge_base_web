@@ -16,6 +16,10 @@ module.exports = {
         target: 'http://localhost:8300',
         changeOrigin: true
       },
+      '/admin/alias_titles': {
+        target: 'http://localhost:8300',
+        changeOrigin: true
+      },
       '/docs': {
         target: 'http://localhost:8300',
         changeOrigin: true

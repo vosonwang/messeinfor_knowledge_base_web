@@ -1,5 +1,12 @@
 #login {
   .ivu-modal {
+    /*让登录框和灰色背景显示在其他对话框之前*/
+    &-mask {
+      z-index: 1600;
+    }
+    &-wrap{
+      z-index: 1600;
+    }
     &-footer {
       border-top: none;
       padding: 0;

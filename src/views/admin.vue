@@ -6,13 +6,10 @@
 </style>
 <template>
   <v-base>
-    <div slot="header">
+    <div slot="header" style="width: 250px;margin: 0 auto">
+      <Navigate></Navigate>
       <div class="badge">
         <ButtonGroup size="small">
-          <!--<Button type="ghost" size="small" @click="backHome">-->
-          <!--<Icon type="home"></Icon>-->
-          <!--</Button>-->
-
           <Button type="ghost" size="small" @click="changeLang">
             <template v-if="$i18n.locale === 'zh-CN'">EN</template>
             <template v-else>中文</template>
@@ -30,6 +27,7 @@
 <script>
   import TOC from '../components/toc'
   import vBase from '../components/base'
+  import Navigate from '../components/navigate'
   import Login from '../components/login'
   import Editor from '../components/editor'
   import log from "../util/log";
@@ -42,7 +40,8 @@
       vBase,
       TOC,
       Login,
-      Editor
+      Editor,
+      Navigate
     },
     beforeRouteEnter(to, from, next) {
       next(vm => {
@@ -67,14 +66,6 @@
       }
     },
     methods: {
-      // backHome() {
-      //   this.$router.push({
-      //     name: 'home',
-      //     params: {
-      //       lang: this.$i18n.locale
-      //     }
-      //   })
-      // },
       changeLang() {
         this.$router.push({
           name: 'admin',

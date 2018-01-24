@@ -12,13 +12,16 @@ const state = {
   TOC: [],
   editor: false,
   doc: {},
+  description: ''
 };
 
 const SWITCH_LOGIN = 'SWITCH_LOGIN';
 const SWITCH_EDITOR = 'SWITCH_EDITOR';
 const GET_TOC = 'GET_TOC';
 const GET_DOC = 'GET_DOC';
+const GET_DESC = 'GET_DESC';
 const UPDATE_DOC = 'UPDATE_DOC';
+
 
 const mutations = {
   [SWITCH_LOGIN](state, bool) {
@@ -27,13 +30,17 @@ const mutations = {
   [SWITCH_EDITOR](state, bool) {
     state.editor = bool;
     /*打开编辑器，初始化doc*/
-    state.doc = {}
+    state.doc = {};
+    state.description = ''
   },
   [GET_TOC](state, TOC) {
     state.TOC = TOC
   },
   [GET_DOC](state, doc) {
     state.doc = doc
+  },
+  [GET_DESC](state, desc) {
+    state.description = desc
   },
   [UPDATE_DOC](state, {type, value}) {
     switch (type) {
@@ -42,6 +49,9 @@ const mutations = {
         break;
       case 'alias_id':
         state.doc.alias_id = value;
+        break;
+      case 'description':
+        state.doc.description = value;
         break;
       case 'text':
         state.doc.text = value;
@@ -78,7 +88,7 @@ const actions = {
   getTOC({commit}, lang) {
     Request.fetchAsync('/admin/nodes/' + lang, 'get').then(rs => {
       if (!!rs) {
-        commit(GET_TOC, util.combine(util.addAttr(rs)))
+        commit(GET_TOC, util.combine(util.addAttr(util.hasAlias(rs))))
       } else if (rs === null) {
         commit(GET_TOC, [])
       }
