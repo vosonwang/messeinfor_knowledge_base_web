@@ -1,5 +1,5 @@
 <style>
-  @import '../style/base.css';
+  @import '../style/base.less';
 </style>
 <template>
   <Layout>

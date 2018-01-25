@@ -1,7 +1,7 @@
 export default [
 
   {
-    path: '/admin/toc/:lang',
+    path: '/toc/:lang',
     meta: {
       title: 'admin'
     },
@@ -10,7 +10,7 @@ export default [
 
   },
   {
-    path: '/admin/allalias',
+    path: '/allalias',
     meta: {
       title: 'alias'
     },

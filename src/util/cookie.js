@@ -3,7 +3,7 @@ let cookie = {}
 cookie.setCookie = (name, value, day) => {
   let exp = new Date();
   exp.setTime(exp.getTime() + day * 24 * 60 * 60 * 1000);
-  document.cookie = name + "=" + encodeURI(value) + ";expires=" + exp.toGMTString();
+  document.cookie = name + "=" + encodeURI(value) + ";path=/;expires=" + exp.toGMTString();
 }
 
 cookie.getCookie = (name) => {

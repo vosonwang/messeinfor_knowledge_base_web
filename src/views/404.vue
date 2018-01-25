@@ -21,7 +21,6 @@
 
 <script>
   import vBase from '../components/base'
-  import util from '../util'
 
 
   export default {
@@ -30,7 +29,7 @@
     },
     beforeRouteEnter(to, from, next) {
       next(vm => {
-        util.setLang(vm, from.path);
+
       })
     },
   }

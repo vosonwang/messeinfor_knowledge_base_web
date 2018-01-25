@@ -4,11 +4,11 @@
 
 <template>
   <Menu mode="horizontal" theme="light" :active-name="activeKey" @on-select="handleSelect">
-    <MenuItem name="/admin/toc/zh-CN">
+    <MenuItem name="/toc/zh-CN">
       <Icon type="ios-paper"></Icon>
       文档目录
     </MenuItem>
-    <MenuItem name="/admin/allalias">
+    <MenuItem name="/allalias">
       <Icon type="stats-bars"></Icon>
       别名管理
     </MenuItem>

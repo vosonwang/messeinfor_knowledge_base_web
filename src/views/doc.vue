@@ -1,5 +1,5 @@
 <style>
-  @import '../style/mavon.css';
+  @import '../style/mavon.less';
 </style>
 
 <template>

@@ -39,7 +39,7 @@ const i18n = new VueI18n({
 // 路由配置
 const RouterConfig = {
   mode: 'history',
-  routes: Routers
+  routes: Routers,
 };
 
 
