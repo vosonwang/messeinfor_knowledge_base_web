@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+const webpack = require('webpack')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
@@ -28,6 +29,20 @@ module.exports = {
       '@': resolve('src'),
     }
   },
+  externals: {
+    'vue': 'Vue',
+    'vuex': 'Vuex',
+    'vue-router': 'VueRouter',
+    'vue-i18n': 'VueI18n',
+    'moment': 'moment',
+    'lodash' : '_'
+  },
+  plugins: [
+    new webpack.DllReferencePlugin({
+      context: __dirname,
+      manifest: require('./vendor-manifest.json')
+    })
+  ],
   module: {
     rules: [
       {

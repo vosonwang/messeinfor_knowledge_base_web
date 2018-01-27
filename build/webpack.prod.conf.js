@@ -69,6 +69,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         : config.build.index,
       template: 'index.html',
       inject: true,
+      // 启动 minify
       minify: {
         removeComments: true,
         collapseWhitespace: true,

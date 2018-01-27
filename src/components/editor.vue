@@ -57,7 +57,7 @@
   import util from '../util'
   import utf8 from 'utf8'
   import cookie from '../util/cookie'
-  import _ from 'lodash'
+  import debounce from 'lodash/debounce'
 
   export default {
     name: "editor",
@@ -145,7 +145,7 @@
     },
     methods: {
       /*查找别名*/
-      searchAlias: _.debounce(function (value) {
+      searchAlias: debounce(function (value) {
         if (value === "") {
           this.UPDATE_DOC({"type": "alias_id", "value": null});
           this.aliases = []

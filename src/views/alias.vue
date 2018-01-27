@@ -62,7 +62,7 @@
   import Navigate from '../components/navigate'
   import Request from '../util/request'
   import util from '../util'
-  import _ from 'lodash'
+  import debounce from 'lodash/debounce'
 
   export default {
     name: "alias",
@@ -336,7 +336,7 @@
 
       /*搜索*/
       //TODO 如果是编辑别名，也会自动触发这个方法，发起请求
-      searchCNTitle: _.debounce(function (value) {
+      searchCNTitle: debounce(function (value) {
         if (value === "") {
           this.form.doc_cn = null;
           this.titlesCN = [];
@@ -363,7 +363,7 @@
         }
 
       },
-      searchENTitle: _.debounce(function (value) {
+      searchENTitle: debounce(function (value) {
         if (value === "") {
           this.form.doc_en = null;
           this.titlesEN = [];
