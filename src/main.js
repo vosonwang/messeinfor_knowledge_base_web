@@ -18,11 +18,7 @@ Vue.use(VueI18n);
 Vue.use(iView);
 
 
-//是否允许 vue-devtools 检查代码。开发版本默认为 true
-Vue.config.devtools = debug;
 
-//是否显示开发版本提示
-Vue.config.productionTip = false;
 
 //多语言配置
 const messages = {
