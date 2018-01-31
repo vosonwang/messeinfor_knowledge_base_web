@@ -29,12 +29,11 @@ module.exports = {
     }
   },
   externals: {
-    'vue': 'Vue',
     'vuex': 'Vuex',
     'vue-router': 'VueRouter',
     'vue-i18n': 'VueI18n',
     'moment': 'moment',
-    'lodash' : '_'
+    'lodash': '_'
   },
   module: {
     rules: [
@@ -85,5 +84,5 @@ module.exports = {
     net: 'empty',
     tls: 'empty',
     child_process: 'empty'
-  }
+  },
 }

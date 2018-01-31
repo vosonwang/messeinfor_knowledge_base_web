@@ -8,7 +8,7 @@
     <div slot="header">
       <Row :style="{width:'90%'}">
         <Col span="17">
-        <Input v-model="title" placeholder="标题"></Input>
+        <Input v-model="title" placeholder="标题" @on-enter="saveArticle"></Input>
         </Col>
         <Col span="6" offset="1">
         <AutoComplete v-model="desc" @on-search="searchAlias" icon="ios-search"
@@ -27,7 +27,7 @@
       </Row>
     </div>
     <mavon-editor ref=md default_open="edit" @subfieldtoggle="subfieldCallback" :value="doc.text"
-                  :toolbars=this.toolbars  :external_link="external_link" :ishljs="true" :subfield = "subfield"
+                  :toolbars=this.toolbars :external_link="external_link" :ishljs="true" :subfield="subfield"
                   @save="saveArticle" @imgAdd="uploadImg" placeholder="写点什么..."></mavon-editor>
     <div class="ivu-upload ivu-upload-select" ref="diy">
       <input type="file" class="ivu-upload-input" ref="input" @change="uploadFile">
@@ -66,29 +66,30 @@
     },
     data() {
       return {
+        subfield: false,
         aliases: [],
         external_link: {
-          markdown_css: function() {
+          markdown_css: function () {
             // 这是你的markdown css文件路径
             return '/markdown/github-markdown.min.css';
           },
-          hljs_js: function() {
+          hljs_js: function () {
             // 这是你的hljs文件路径
             return '/highlightjs/highlight.min.js';
           },
-          hljs_css: function(css) {
+          hljs_css: function (css) {
             // 这是你的代码高亮配色文件路径
             return '/highlightjs/styles/' + css + '.min.css';
           },
-          hljs_lang: function(lang) {
+          hljs_lang: function (lang) {
             // 这是你的代码高亮语言解析路径
             return '/highlightjs/languages/' + lang + '.min.js';
           },
-          katex_css: function() {
+          katex_css: function () {
             // 这是你的katex配色方案路径路径
             return '/katex/katex.min.css';
           },
-          katex_js: function() {
+          katex_js: function () {
             // 这是你的katex.js路径
             return '/katex/katex.min.js';
           },

@@ -11,7 +11,9 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      /*注意调整顺序，会对有请求影响*/
+      //注意调整顺序，会对有请求影响
+
+      //别名列表中搜索文章标题
       '/admin/titles': {
         target: 'http://localhost:8300',
         changeOrigin: true

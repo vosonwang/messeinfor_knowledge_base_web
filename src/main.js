@@ -18,7 +18,11 @@ Vue.use(VueI18n);
 Vue.use(iView);
 
 
+//是否使用开启vue devtools，如果vue加入externals中，则devtools将检测不到vuex
+Vue.config.devtools = debug;
 
+//如果iview是dll形式的，会导致这条失效
+Vue.config.productionTip = false;
 
 //多语言配置
 const messages = {

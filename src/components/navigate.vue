@@ -8,7 +8,7 @@
       <Icon type="ios-paper"></Icon>
       文档目录
     </MenuItem>
-    <MenuItem name="/allalias">
+    <MenuItem name="/all_alias">
       <Icon type="stats-bars"></Icon>
       别名管理
     </MenuItem>

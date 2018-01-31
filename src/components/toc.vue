@@ -24,11 +24,11 @@
     watch: {
       TOC: {
         handler: function (val, oldval) {
-          /*一旦全局tocs变化，则更新目录*/
+          //一旦全局tocs变化，则更新目录
           this.tree[0].children = JSON.parse(JSON.stringify(val))
         }
       },
-      /*切换根目录的中英文显示*/
+      //切换根目录的中英文显示
       '$i18n.locale': {
         handler: function (val, oldVal) {
           this.tree[0].title = this.$t('toc.title')
@@ -236,7 +236,7 @@
         ])
       },
       append(node) {
-        /*打开编辑器，会引发清空doc的操作，因此要放在前面执行*/
+        //打开编辑器，会引发清空doc的操作，因此要放在前面执行
         this.SWITCH_EDITOR(true);
         this.UPDATE_DOC({"type": "creator", "value": cookie.getCookie('userId')});
         this.UPDATE_DOC({"type": "parent_id", "value": node.node.id});
@@ -266,11 +266,11 @@
         const length = parent.children.length;
         if (index !== 0) {
 
-          Request.fetchAsync('/admin/nodes/' + data.alias_id, 'patch',
-            {"id": parent.children[index - 1].alias_id}
+          Request.fetchAsync('/admin/nodes/' + data.id, 'patch',
+            {"id": parent.children[index - 1].id}
           ).then(result => {
             if (!!result) {
-              /*移除选中状态*/
+              //移除选中状态
               data.active = false;
               parent.children = parent.children.slice(0, index - 1).concat(
                 parent.children.slice(index, index + 1),
@@ -285,7 +285,7 @@
         }
       },
       editDoc(data) {
-        //如果别名alias_id存在，则同时发起两个请求：文档和对应的别名
+        //如果别名alias_id存在，则同时发起两个请求：获取文档和对应的别名
         if (data.alias_id !== '00000000-0000-0000-0000-000000000000') {
           Promise.all([Request.fetchAsync('/docs/' + data.id, 'get'), Request.fetchAsync('/alias/' + data.alias_id, 'get')]).then(all => {
             if (!all[0]) {

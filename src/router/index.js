@@ -1,6 +1,8 @@
 export default [
 
   {
+    //为了方便路由判断，所以lang后置了
+    //管理员首页-文档目录
     path: '/toc/:lang',
     meta: {
       title: 'admin'
@@ -10,7 +12,8 @@ export default [
 
   },
   {
-    path: '/allalias',
+    //别名目录
+    path: '/all_alias',
     meta: {
       title: 'alias'
     },
@@ -19,6 +22,7 @@ export default [
 
   },
   {
+    //首页
     path: '/kb/:lang',
     meta: {
       title: 'Home'
@@ -30,7 +34,6 @@ export default [
     path: '/doc/:lang/:alias',
     name: 'doc',
     component: (resolve) => require(['../views/doc.vue'], resolve)
-
   },
   {
     path: '*',

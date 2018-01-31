@@ -120,6 +120,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     // copy custom static assets
     new CopyWebpackPlugin([
       {
+        // mavon 外部引用
         from: 'node_modules/mavon-editor/dist/highlightjs',
         to: path.resolve(__dirname, '../dist/highlightjs'), // 插件将会把文件导出于/dist/highlightjs之下
       }, {
