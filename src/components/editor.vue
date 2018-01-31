@@ -27,7 +27,7 @@
       </Row>
     </div>
     <mavon-editor ref=md default_open="edit" @subfieldtoggle="subfieldCallback" :value="doc.text"
-                  :toolbars=this.toolbars
+                  :toolbars=this.toolbars  :external_link="external_link" :ishljs="true" :subfield = "subfield"
                   @save="saveArticle" @imgAdd="uploadImg" placeholder="写点什么..."></mavon-editor>
     <div class="ivu-upload ivu-upload-select" ref="diy">
       <input type="file" class="ivu-upload-input" ref="input" @change="uploadFile">
@@ -67,6 +67,32 @@
     data() {
       return {
         aliases: [],
+        external_link: {
+          markdown_css: function() {
+            // 这是你的markdown css文件路径
+            return '/markdown/github-markdown.min.css';
+          },
+          hljs_js: function() {
+            // 这是你的hljs文件路径
+            return '/highlightjs/highlight.min.js';
+          },
+          hljs_css: function(css) {
+            // 这是你的代码高亮配色文件路径
+            return '/highlightjs/styles/' + css + '.min.css';
+          },
+          hljs_lang: function(lang) {
+            // 这是你的代码高亮语言解析路径
+            return '/highlightjs/languages/' + lang + '.min.js';
+          },
+          katex_css: function() {
+            // 这是你的katex配色方案路径路径
+            return '/katex/katex.min.css';
+          },
+          katex_js: function() {
+            // 这是你的katex.js路径
+            return '/katex/katex.min.js';
+          },
+        },
         toolbars: {
           bold: true, // 粗体
           italic: true, // 斜体
@@ -101,8 +127,6 @@
       }
     },
     mounted() {
-      /*默认显示的是全屏编辑，所以双栏模式设置需手动设置为false*/
-      this.$children[0].s_subfield = false;
 
       /*将自定义的上传文件按钮插入到toolbar中*/
       let md = this.$refs.md,
