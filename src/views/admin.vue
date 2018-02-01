@@ -48,7 +48,7 @@
         log.print("admin|i18n旧值:" + vm.$i18n.locale);
         vm.$i18n.locale = to.path.includes("zh-CN") ? "zh-CN" : "en-US";
         log.print("admin|i18n新值:" + vm.$i18n.locale);
-        vm.lang = vm.$i18n.locale === "zh-CN" ? "en-US" : "zh-CN";
+        vm.diffLang = vm.$i18n.locale === "zh-CN" ? "en-US" : "zh-CN";
         vm.getTOC(util.langParse(vm.$i18n.locale))
       })
     },
@@ -56,13 +56,13 @@
       log.print("admin|i18n旧值:" + this.$i18n.locale);
       this.$i18n.locale = to.path.includes("zh-CN") ? "zh-CN" : "en-US";
       log.print("admin|i18n新值:" + this.$i18n.locale);
-      this.lang = this.$i18n.locale === "zh-CN" ? "en-US" : "zh-CN";
+      this.diffLang = this.$i18n.locale === "zh-CN" ? "en-US" : "zh-CN";
       this.getTOC(util.langParse(this.$i18n.locale));
       next()
     },
     data() {
       return {
-        lang: ""
+        diffLang: ""
       }
     },
     methods: {
@@ -70,7 +70,7 @@
         this.$router.push({
           name: 'admin',
           params: {
-            lang: this.lang
+            lang: this.diffLang
           }
         })
       },

@@ -22,14 +22,19 @@ export default [
 
   },
   {
-    //首页
-    path: '/kb/:lang',
-    meta: {
-      title: 'Home'
-    },
-    name: 'home',
-    component: (resolve) => require(['../views/home.vue'], resolve)
+    path: '/kb/:id',
+    name: 'kb',
+    component: (resolve) => require(['../views/doc.vue'], resolve)
   },
+  // {
+  //   //首页
+  //   path: '/kb/:lang',
+  //   meta: {
+  //     title: 'Home'
+  //   },
+  //   name: 'home',
+  //   component: (resolve) => require(['../views/home.vue'], resolve)
+  // },
   {
     path: '/doc/:lang/:alias',
     name: 'doc',

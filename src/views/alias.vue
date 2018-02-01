@@ -298,13 +298,20 @@
         })
       },
       viewDoc(data) {
-        this.$router.push({
-          name: 'doc',
-          params: {
-            lang: this.$i18n.locale,
-            alias: data.name
-          }
-        })
+        if(data.name){
+          this.$router.push({
+            name: 'doc',
+            params: {
+              lang: this.$i18n.locale,
+              alias: data.name
+            }
+          })
+        }else {
+          this.$Message.warning({
+            content: "未关联文档！",
+            duration: 2
+          })
+        }
       },
       modalChange(value) {
         /*初始化表单*/
@@ -379,7 +386,7 @@
       selectTitleEN(value) {
         let _self = this;
         if (value) {
-          if (this.titlesCN !== null && this.titlesCN !== []) {
+          if (this.titlesEN !== null && this.titlesEN !== []) {
             this.titlesEN.forEach(function (v) {
               if (v.title === value) {
                 _self.form.doc_en = v.id;

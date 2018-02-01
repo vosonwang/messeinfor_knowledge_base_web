@@ -27,7 +27,7 @@
       </Row>
     </div>
     <mavon-editor ref=md default_open="edit" @subfieldtoggle="subfieldCallback" :value="doc.text"
-                  :toolbars=this.toolbars :external_link="external_link" :ishljs="true" :subfield="subfield"
+                  :toolbars=this.toolbars :external_link="external_link" :ishljs="true" :subfield="false"
                   @save="saveArticle" @imgAdd="uploadImg" placeholder="写点什么..."></mavon-editor>
     <div class="ivu-upload ivu-upload-select" ref="diy">
       <input type="file" class="ivu-upload-input" ref="input" @change="uploadFile">
@@ -66,7 +66,6 @@
     },
     data() {
       return {
-        subfield: false,
         aliases: [],
         external_link: {
           markdown_css: function () {

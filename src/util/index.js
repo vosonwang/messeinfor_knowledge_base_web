@@ -2,7 +2,7 @@ import moment from "moment";
 
 let util = {};
 util.title = function (title) {
-  title = title ? title : 'Messeinfor Knowledge Base';
+  title = title ? title : 'Coming . . . . .';
   window.document.title = title
 };
 

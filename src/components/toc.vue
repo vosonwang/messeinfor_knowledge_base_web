@@ -314,9 +314,8 @@
       },
       viewDoc(data) {
         this.$router.push({
-          name: 'doc',
+          name: 'kb',
           params: {
-            lang: util.getLangPath(this.$i18n.locale),
             id: data.id
           }
         })

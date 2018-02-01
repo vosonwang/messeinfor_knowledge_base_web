@@ -12,6 +12,7 @@ import en_US from 'iview/dist/locale/en-US'
 import zh_CN from 'iview/dist/locale/zh-CN'
 import './style/theme.less'
 import debug from './util/debug'
+import Util from './util'
 
 Vue.use(VueRouter);
 Vue.use(VueI18n);
@@ -47,6 +48,7 @@ const router = new VueRouter(RouterConfig);
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start();
+  Util.title(to.meta.title);
   next()
 });
 

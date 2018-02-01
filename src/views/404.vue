@@ -11,9 +11,9 @@
       <template v-else>
         <p :style="{fontSize:'200px'}">404</p>
         <p :style="{fontSize:'50px'}">找不到该页面</p>
-        <router-link class="ivu-btn ivu-btn-ghost backhome" :to="{ name: 'home', params: { lang: 'zh-CN' }}"
-                     tag="button">返回主页
-        </router-link>
+        <!--<router-link class="ivu-btn ivu-btn-ghost backhome" :to="{ name: 'home', params: { lang: 'zh-CN' }}"-->
+                     <!--tag="button">返回主页-->
+        <!--</router-link>-->
       </template>
     </Card>
   </v-base>
@@ -36,7 +36,7 @@
 </script>
 
 <style scoped>
-  .backhome {
-    margin-top: 20px;
-  }
+  /*.backhome {*/
+    /*margin-top: 20px;*/
+  /*}*/
 </style>
