@@ -19,8 +19,10 @@ export default {
       err: '哪里出问题了，请联系管理员！',
       timeout: '会话超时，请重新登录！'
     },
-
-
+    notFound:{
+      msg:'找不到页面',
+      back:'返回'
+    }
   },
   'en-US': {
     home: {
@@ -42,6 +44,9 @@ export default {
       err: 'Something wrong，contact with the admin!',
       timeout: 'Session expired, please logon again!'
     },
-
+    notFound:{
+      msg:'Page Not Found',
+      back:'Back'
+    }
   }
 };

@@ -13,7 +13,7 @@ export default [
   },
   {
     //别名目录
-    path: '/all_alias',
+    path: '/allalias',
     meta: {
       title: 'alias'
     },

@@ -2,7 +2,7 @@ import moment from "moment";
 
 let util = {};
 util.title = function (title) {
-  title = title ? title : 'Coming . . . . .';
+  title = title ? title : 'Opening . . . . .';
   window.document.title = title
 };
 

@@ -32,8 +32,6 @@ module.exports = {
     'vuex': 'Vuex',
     'vue-router': 'VueRouter',
     'vue-i18n': 'VueI18n',
-    'moment': 'moment',
-    'lodash': '_'
   },
   module: {
     rules: [

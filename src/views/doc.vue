@@ -118,7 +118,7 @@
             this.GET_DOC(rs);
             this.$i18n.locale = util.langParse(rs.lang)
           } else {
-            window.location = "/";
+            this.$router.push({name: '404'})
           }
         })
       },
@@ -128,7 +128,7 @@
             window.document.title = rs.title;
             this.GET_DOC(rs);
           } else {
-
+            this.$router.push({name: '404'})
           }
         })
       },

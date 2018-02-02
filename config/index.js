@@ -59,6 +59,10 @@ module.exports = {
         target: 'http://localhost:8300',
         changeOrigin: true
       },
+      '/upload': {
+        target: 'http://localhost:8300',
+        changeOrigin: true
+      },
     },
 
     // Various Dev Server settings

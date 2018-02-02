@@ -4,10 +4,6 @@ import log from '../util/log'
 
 let Request = {};
 
-const url={
-  'getTitle':'/admin/titles'
-};
-
 const status = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return Promise.resolve(response)
