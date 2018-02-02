@@ -6,12 +6,10 @@
   <Modal id="login" v-model="login" width="300" :closable="false" :mask-closable="false">
     <Form ref="loginForm" :model="loginForm" :rules="ruleInline">
       <FormItem prop="user">
-        <Input type="text" v-model="loginForm.username" placeholder="用户名"
-               icon="person"></Input>
+        <Input type="text" v-model="loginForm.username" placeholder="用户名"></Input>
       </FormItem>
       <FormItem prop="password">
-        <Input type="password" v-model="loginForm.password" placeholder="密码"
-               icon="ios-locked" @on-enter="signIn('loginForm')"></Input>
+        <Input type="password" v-model="loginForm.password" placeholder="密码" @on-enter="signIn('loginForm')"></Input>
       </FormItem>
       <FormItem>
         <Button type="error" size="large" long :loading="loading" @click="signIn('loginForm')">
