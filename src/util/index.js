@@ -10,7 +10,8 @@ util.title = function (title) {
 util.addAttr = (data) => {
   data.forEach(function (v) {
     v.active = false;
-    v.expand = true
+    //判读是否是一级目录，如果是添加expand属性
+    if (v.parent_id === '00000000-0000-0000-0000-000000000000') v.expand = true
   });
   return data
 };
