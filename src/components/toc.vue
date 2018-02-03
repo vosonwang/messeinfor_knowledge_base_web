@@ -270,12 +270,13 @@
             if (!!result) {
               //移除选中状态
               data.active = false;
-              parent.children = parent.children.slice(0, index - 1).concat(
-                parent.children.slice(index, index + 1),
-                parent.children.slice(index - 1, index),
-                parent.children.slice(index + 1, length)
-              )
-
+              //Es6 合并数组
+              parent.children = [
+                ...parent.children.slice(0, index - 1),
+                ...parent.children.slice(index, index + 1),
+                ...parent.children.slice(index - 1, index),
+                ...parent.children.slice(index + 1, length)
+              ]
             }
           })
 
