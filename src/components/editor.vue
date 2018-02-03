@@ -227,7 +227,7 @@
         /*获取要上传文件*/
         let a = e.target.files[0];
 
-        Request.fetchAsync('/admin/files', 'post', a, {"id": utf8.encode(a.name)}).then(data => {
+        Request.fetchAsync('/admin/files/'+utf8.encode(a.name), 'post', a).then(data => {
             /*清空上传文件，以便同一文件可以多次上传，否则同一个文件不会触发change事件*/
             e.target.value = null;
 

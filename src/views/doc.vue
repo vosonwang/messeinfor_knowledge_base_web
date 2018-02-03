@@ -123,7 +123,7 @@
         })
       },
       getDocByAlias(name, lang) {
-        Request.fetchAsync("/mkb/docAlias/" + name, 'get', null, {"id": util.langParse(lang)}).then(rs => {
+        Request.fetchAsync("/mkb/docAlias/" + name+'/'+util.langParse(lang), 'get').then(rs => {
           if (!!rs) {
             window.document.title = rs.title;
             this.GET_DOC(rs);

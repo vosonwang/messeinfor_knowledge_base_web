@@ -266,9 +266,7 @@
         const length = parent.children.length;
         if (index !== 0) {
 
-          Request.fetchAsync('/admin/nodes/' + data.id, 'patch',
-            {"id": parent.children[index - 1].id}
-          ).then(result => {
+          Request.fetchAsync('/admin/nodes/' + data.id+'/'+parent.children[index - 1].id, 'patch').then(result => {
             if (!!result) {
               //移除选中状态
               data.active = false;

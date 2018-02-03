@@ -18,20 +18,21 @@ const json = (response) => {
   return response.json()
 };
 
-Request.fetchAsync = async (url, method, data, headerArg) => {
+Request.fetchAsync = async (url, method, data) => {
   log.print('Request：' + method + ":" + url);
-  let header = new Headers(),
-    //method字符串转为大写
-    capMethod = method.toUpperCase(), proData = data;
+  let payload = {};
+
+  //method字符串转为大写
+  payload.method = method.toUpperCase();
 
 
-  if (!url.startsWith("/admin/images") && !url.startsWith("/admin/files")) {
-    proData = JSON.stringify(data)
-  }
-
-
-  if (headerArg !== undefined && headerArg.id !== undefined) {
-    header.append("id", headerArg.id)
+  if (payload.method !== 'GET') {
+    //判断是否是上传文件，如果不是则将数据转为json
+    if (!url.startsWith("/admin/images") && !url.startsWith("/admin/files")) {
+      payload.body = JSON.stringify(data)
+    } else {
+      payload.body = data
+    }
   }
 
 
@@ -43,15 +44,16 @@ Request.fetchAsync = async (url, method, data, headerArg) => {
       let a = cookie.getCookie("Authorization");
       if (!a) {
         throw new Error("用户未登录！")
+      } else {
+        let header = new Headers();
+        header.append('Authorization', a);
+        payload.headers = header
       }
-      header.append('Authorization', a)
     }
 
-    if (capMethod === 'GET') {
-      return await fetch(url, {method: capMethod, headers: header}).then(status).then(json)
-    } else {
-      return await fetch(url, {method: capMethod, body: proData, headers: header}).then(status).then(json)
-    }
+
+    return await fetch(url, payload).then(status).then(json)
+
 
   } catch (e) {
     switch (e.message) {
