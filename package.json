@@ -15,7 +15,7 @@
   "dependencies": {
     "iview": "^2.9.1",
     "lodash": "^4.17.4",
-    "mavon-editor": "^2.4.3",
+    "mavon-editor": "^2.4.16",
     "moment": "^2.19.3",
     "utf8": "^3.0.0",
     "vue": "^2.5.13",

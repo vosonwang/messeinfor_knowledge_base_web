@@ -218,7 +218,7 @@
         this.$refs.input.click()
       },
       uploadImg(filename, imgFile) {
-        Request.fetchAsync('/admin/images', 'post', imgFile, {}).then(data =>
+        Request.fetchAsync('/admin/images', 'post', imgFile).then(data =>
           this.$refs.md.$img2Url(filename, data)
         )
       },

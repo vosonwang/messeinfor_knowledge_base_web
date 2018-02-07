@@ -349,10 +349,7 @@
           this.titlesCN = [];
         } else {
           let _self = this;
-          Request.fetchAsync("/admin/titles", "post", {
-            "lang": 0,
-            "title": value
-          }).then(rs => _self.titlesCN = rs)   //rs的结果可能为null
+          Request.fetchAsync("/admin/titles/"+value+'/'+0, "get").then(rs => _self.titlesCN = rs)   //rs的结果可能为null
         }
       }, 500),
       selectTitleCN(value) {  //不管value如何变化都会调用这个函数
@@ -376,10 +373,7 @@
           this.titlesEN = [];
         } else {
           let _self = this;
-          Request.fetchAsync("/admin/titles", "post", {
-            "lang": 1,
-            "title": value
-          }).then(rs => _self.titlesEN = rs)  //rs的结果可能为null
+          Request.fetchAsync("/admin/titles/"+value+'/'+1, "get").then(rs => _self.titlesEN = rs)  //rs的结果可能为null
         }
 
       }, 500),

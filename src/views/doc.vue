@@ -20,7 +20,7 @@
     <Card slot="content" dis-hover :style="{margin:'20px auto',width:'80%'}">
       <div style="margin:20px 0 0 24px;line-height: 50px">
         <h1>{{doc.title}}</h1>
-        <p>{{$t('doc.created')}}{{created}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{$t('doc.updated')}}{{updated}}</p>
+        <p>{{$t('doc.updated')}}{{updated}}</p>
       </div>
 
       <mavon-editor default_open="preview" :value=this.doc.text :toolbarsFlag="false" :external_link="external_link"

@@ -25,8 +25,7 @@ Request.fetchAsync = async (url, method, data) => {
   //method字符串转为大写
   payload.method = method.toUpperCase();
 
-
-  if (payload.method !== 'GET') {
+  if (data) {
     //判断是否是上传文件，如果不是则将数据转为json
     if (!url.startsWith("/admin/images") && !url.startsWith("/admin/files")) {
       payload.body = JSON.stringify(data)
