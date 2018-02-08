@@ -328,7 +328,7 @@
       },
       addTitle(data) {
         data.forEach(function (v) {
-          v.title = v.description + v.name;
+          v.title = v.description + " " + v.name;
           if (v.title_cn) {
             v.title = v.title + "   *" + " "
           }
