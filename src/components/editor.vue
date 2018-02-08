@@ -26,7 +26,7 @@
         </Col>
       </Row>
     </div>
-    <mavon-editor ref=md default_open="edit" @subfieldtoggle="subfieldCallback" :value="doc.text"
+    <mavon-editor ref=md default_open="edit"  :value="doc.text"
                   :toolbars=this.toolbars :external_link="external_link" :ishljs="true" :subfield="false"
                   @save="saveArticle" @imgAdd="uploadImg" placeholder="写点什么..."></mavon-editor>
     <div class="ivu-upload ivu-upload-select" ref="diy">
@@ -194,11 +194,6 @@
         } else {
           this.UPDATE_DOC({"type": "alias_id", "value": null});
         }
-      },
-      /*点击双栏模式的回调函数*/
-      subfieldCallback() {
-        /*在点击双栏模式后，迫使预览模式的值和双栏模式保持一致*/
-        this.$children[0].s_preview_switch = this.$children[0].s_subfield
       },
       /*保存文档*/
       saveArticle(value) {

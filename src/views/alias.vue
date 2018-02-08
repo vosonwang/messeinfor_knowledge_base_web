@@ -298,7 +298,7 @@
         })
       },
       viewDoc(data) {
-        if(data.name){
+        if (data.name) {
           this.$router.push({
             name: 'doc',
             params: {
@@ -306,7 +306,7 @@
               alias: data.name
             }
           })
-        }else {
+        } else {
           this.$Message.warning({
             content: "未关联文档！",
             duration: 2
@@ -328,7 +328,13 @@
       },
       addTitle(data) {
         data.forEach(function (v) {
-          v.title = v.description + " " + v.name + " --" + v.title_cn + " --" + v.title_en
+          v.title = v.description + v.name;
+          if (v.title_cn) {
+            v.title = v.title + "   *" + " "
+          }
+          if (v.title_en) {
+            v.title = v.title + "   '"
+          }
         });
         return data
       },
@@ -349,7 +355,7 @@
           this.titlesCN = [];
         } else {
           let _self = this;
-          Request.fetchAsync("/admin/titles/"+value+'/'+0, "get").then(rs => _self.titlesCN = rs)   //rs的结果可能为null
+          Request.fetchAsync("/admin/titles/" + value + '/' + 0, "get").then(rs => _self.titlesCN = rs)   //rs的结果可能为null
         }
       }, 500),
       selectTitleCN(value) {  //不管value如何变化都会调用这个函数
@@ -373,7 +379,7 @@
           this.titlesEN = [];
         } else {
           let _self = this;
-          Request.fetchAsync("/admin/titles/"+value+'/'+1, "get").then(rs => _self.titlesEN = rs)  //rs的结果可能为null
+          Request.fetchAsync("/admin/titles/" + value + '/' + 1, "get").then(rs => _self.titlesEN = rs)  //rs的结果可能为null
         }
 
       }, 500),

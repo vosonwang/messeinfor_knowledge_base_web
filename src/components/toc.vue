@@ -11,7 +11,6 @@
 <script>
   import Request from '../util/request'
   import {mapActions, mapMutations, mapState} from 'vuex'
-  import util from '../util'
   import cookie from '../util/cookie'
 
   export default {
@@ -266,7 +265,7 @@
         const length = parent.children.length;
         if (index !== 0) {
 
-          Request.fetchAsync('/admin/nodes/' + data.id+'/'+parent.children[index - 1].id, 'patch').then(result => {
+          Request.fetchAsync('/admin/nodes/' + data.id + '/' + parent.children[index - 1].id, 'patch').then(result => {
             if (!!result) {
               //移除选中状态
               data.active = false;
@@ -292,16 +291,21 @@
                 content: "获取文档失败！",
                 duration: 2
               })
-            } else if (!all[1]) {
-              this.$Message.error({
-                content: "获取别名失败！",
-                duration: 2
-              })
             } else {
+
+              if (!all[1]) {
+                this.$Message.error({
+                  content: "获取别名失败！",
+                  duration: 2
+                });
+              }
+
+              //即使获取别名失败，也会打开编辑器
               this.SWITCH_EDITOR(true);
               this.GET_DOC(all[0]);
               this.GET_DESC(all[1].description);
             }
+
 
           })
         } else {
