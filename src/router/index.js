@@ -1,5 +1,4 @@
 export default [
-
   {
     //为了方便路由判断，所以lang后置了
     //管理员首页-文档目录
@@ -39,6 +38,11 @@ export default [
     path: '/doc/:lang/:alias',
     name: 'doc',
     component: (resolve) => require(['../views/doc.vue'], resolve)
+  },
+  {
+    path: '/search/:lang/:words',
+    name: 'search',
+    component: (resolve) => require(['../views/search.vue'], resolve)
   },
   {
     path: '*',

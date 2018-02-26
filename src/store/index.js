@@ -12,7 +12,8 @@ const state = {
   TOC: [],
   editor: false,
   doc: {},
-  description: ''
+  description: '',
+  diffLang:''
 };
 
 const SWITCH_LOGIN = 'SWITCH_LOGIN';
@@ -20,6 +21,7 @@ const SWITCH_EDITOR = 'SWITCH_EDITOR';
 const GET_TOC = 'GET_TOC';
 const GET_DOC = 'GET_DOC';
 const GET_DESC = 'GET_DESC';
+const GET_DIFF_LANG = 'GET_DIFF_LANG';
 const UPDATE_DOC = 'UPDATE_DOC';
 
 
@@ -41,6 +43,9 @@ const mutations = {
   },
   [GET_DESC](state, desc) {
     state.description = desc
+  },
+  [GET_DIFF_LANG](state, diffLang) {
+    state.diffLang = diffLang
   },
   [UPDATE_DOC](state, {type, value}) {
     switch (type) {

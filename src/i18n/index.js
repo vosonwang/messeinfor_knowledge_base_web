@@ -13,7 +13,10 @@ export default {
       doc:'新文档'
     },
     search: {
-      placeholder: '输入标题或者内容...'
+      placeholder: '输入标题或者内容...',
+      result:'搜索结果',
+      took:'搜索耗时：',
+      hits:'搜索结果：'
     },
     request: {
       err: '哪里出问题了，请联系管理员！',
@@ -29,7 +32,10 @@ export default {
       success: 'It works！'
     },
     search: {
-      placeholder: 'Input title or content...'
+      placeholder: 'Input title or content...',
+      result:'Search Result',
+      took:'Took: ',
+      hits:'Result: '
     },
     doc: {
       created: 'created：',

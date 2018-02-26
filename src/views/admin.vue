@@ -8,14 +8,7 @@
   <v-base>
     <div slot="header" style="width: 250px;margin: 0 auto">
       <Navigate></Navigate>
-      <div class="badge">
-        <ButtonGroup size="small">
-          <Button type="ghost" size="small" @click="changeLang">
-            <template v-if="$i18n.locale === 'zh-CN'">EN</template>
-            <template v-else>中文</template>
-          </Button>
-        </ButtonGroup>
-      </div>
+      <Lang></Lang>
     </div>
     <Card slot="content" dis-hover :style="{margin:'20px auto',width:'80%'}">
       <Login></Login>
@@ -30,9 +23,9 @@
   import Navigate from '../components/navigate'
   import Login from '../components/login'
   import Editor from '../components/editor'
-  import log from "../util/log";
   import util from "../util";
-  import {mapActions} from 'vuex'
+  import {mapActions, mapMutations} from 'vuex'
+  import Lang from "../components/lang"
 
   export default {
     name: "admin",
@@ -41,36 +34,26 @@
       TOC,
       Login,
       Editor,
-      Navigate
+      Navigate,
+      Lang
     },
     beforeRouteEnter(to, from, next) {
       next(vm => {
         vm.$i18n.locale = to.path.includes("zh-CN") ? "zh-CN" : "en-US";
-        vm.diffLang = vm.$i18n.locale === "zh-CN" ? "en-US" : "zh-CN";
+        vm.GET_DIFF_LANG(to.params.lang === "zh-CN" ? "en-US" : "zh-CN");
         vm.getTOC(util.langParse(vm.$i18n.locale))
       })
     },
     beforeRouteUpdate(to, from, next) {
       this.$i18n.locale = to.path.includes("zh-CN") ? "zh-CN" : "en-US";
-      this.diffLang = this.$i18n.locale === "zh-CN" ? "en-US" : "zh-CN";
+      this.GET_DIFF_LANG(to.params.lang === "zh-CN" ? "en-US" : "zh-CN");
       this.getTOC(util.langParse(this.$i18n.locale));
       next()
     },
-    data() {
-      return {
-        diffLang: ""
-      }
-    },
+
     methods: {
-      changeLang() {
-        this.$router.push({
-          name: 'admin',
-          params: {
-            lang: this.diffLang
-          }
-        })
-      },
-      ...mapActions(['getTOC'])
+      ...mapActions(['getTOC']),
+      ...mapMutations(['GET_DIFF_LANG']),
     }
   }
 </script>

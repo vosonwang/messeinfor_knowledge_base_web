@@ -2,7 +2,7 @@
 // Template version: 1.2.8
 // see http://vuejs-templates.github.io/webpack for documentation.
 
-const path = require('path')
+const path = require('path');
 
 module.exports = {
   dev: {
@@ -12,6 +12,12 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       //注意调整顺序，会对有请求影响
+
+      //搜索列表页
+      '/mkb/search':{
+        target: 'http://localhost:8300',
+        changeOrigin: true
+      },
 
       // 通过Alias获取文档
       '/mkb/docAlias':{
@@ -61,6 +67,10 @@ module.exports = {
       },
       '/upload': {
         target: 'http://localhost:8300',
+        changeOrigin: true
+      },
+      '/es': {
+        target: 'http://localhost:9200',
         changeOrigin: true
       },
     },
